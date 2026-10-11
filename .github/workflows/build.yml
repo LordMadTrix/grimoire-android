@@ -1,0 +1,130 @@
+name: Build and Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows-latest
+            target: x86_64-pc-windows-msvc
+          - platform: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+          - platform: macos-14
+            target: aarch64-apple-darwin
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: install frontend dependencies
+        run: npm install && npm install --prefix map-editor
+
+      - name: build tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v__VERSION__
+          releaseName: "Grimoire v__VERSION__"
+          releaseBody: |
+            ### 🐉 Grimoire v__VERSION__
+
+            Build de développement autonome et ultra-léger.
+
+            #### 📥 Téléchargement & Installation
+            - **Windows** : Téléchargez l'installateur `.msi` ou le setup `.exe` ci-dessous.
+            - **Linux** : Téléchargez le paquet `.AppImage` ou `.deb`.
+
+            ---
+
+            #### 🛡️ Remarque importante concernant Windows SmartScreen et Chrome :
+            *Grimoire est un projet open-source indépendant en cours de développement.*
+            Comme les nouvelles versions n'ont pas encore accumulé d'historique auprès des serveurs de Microsoft/Google, votre navigateur ou Windows peut afficher un message de précaution au premier lancement :
+            
+            - **Sur Google Chrome** : Si le téléchargement est mis en attente, cliquez sur la flèche ou les trois petits points à côté du fichier > sélectionnez **« Conserver »** (ou « Télécharger le fichier suspect »).
+            - **Sous Windows (SmartScreen)** : Lorsque la fenêtre bleue *« Windows a protégé votre ordinateur »* s'affiche, cliquez sur le lien **« Informations complémentaires »**, puis sur le bouton **« Exécuter quand même »**.
+
+            Le code source est 100% ouvert, auditable et disponible sur ce dépôt GitHub.
+
+            ---
+            *Voir le détail des changements récents dans l'historique des commits.*
+          releaseDraft: false
+          prerelease: false
+
+  normalize-assets:
+    needs: release
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: normalize release asset names
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash scripts/normalize-release-assets.sh
+
+  winget-manifests:
+    needs: normalize-assets
+    if: ${{ !cancelled() && needs.normalize-assets.result != 'failed' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: generate winget manifests with real sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm install --no-save
+          bash scripts/generate-winget-manifest.sh
+          bash scripts/normalize-release-assets.sh   # vérification idempotence
+
+      - name: commit manifests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          VERSION=$(node -p "require('./package.json').version")
+          git add dist-manifests/winget
+          if git diff --cached --quiet; then
+            echo "Aucun changement de manifest — rien à committer."
+          else
+            git commit -m "chore(manifest): manifests winget v$VERSION (CI)"
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main || echo "Push skipped or branch protected."
+          fi

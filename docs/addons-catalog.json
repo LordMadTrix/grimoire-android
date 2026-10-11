@@ -1,0 +1,92 @@
+{
+  "version": "1.1",
+  "community_drive_url": "https://drive.google.com/drive/folders/16ZM0lg66rgFdsQ9kmFoA2pQZ2a0mciF3?usp=drive_link",
+  "addons": [
+    {
+      "id": "wfrp-essential-maps-pack",
+      "name": "🗺️ Pack Essentiel Cartes & Donjons WFRP",
+      "version": "1.0.0",
+      "category": "maps",
+      "description": "Collection de cartes tactiques haute résolution : Auberge du Cochon Noyé, Égouts fétides d'Altdorf, Ruelle brumeuse, Ruines du Chaos et Temple de Sigmar.",
+      "author": "LordMadTrix",
+      "thumbnail": "https://raw.githubusercontent.com/LordMadTrix/grimoire/main/docs/grimoire_hero.png",
+      "download_url": "https://github.com/LordMadTrix/grimoire/releases/download/v0.4.1/wfrp-essential-maps.zip",
+      "size_bytes": 48234496,
+      "file_count": 12,
+      "destination": "maps",
+      "tags": [
+        "cartes",
+        "wfrp",
+        "auberge",
+        "egouts",
+        "donjon",
+        "sigmar"
+      ],
+      "available": false
+    },
+    {
+      "id": "wfrp-dark-fantasy-tokens",
+      "name": "🧙 Pack Figurines & Monstres Dark Fantasy",
+      "version": "1.0.0",
+      "category": "tokens",
+      "description": "Plus de 45 tokens illustrés transparents prêts au combat : Guerriers du Chaos, Skavens, Hommes-Bêtes, Répurgateurs, Gardes de la cité, Gobelins et Sorcières.",
+      "author": "LordMadTrix",
+      "thumbnail": "https://raw.githubusercontent.com/LordMadTrix/grimoire/main/public/favicon.svg",
+      "download_url": "https://github.com/LordMadTrix/grimoire/releases/download/v0.4.1/wfrp-dark-tokens.zip",
+      "size_bytes": 18454912,
+      "file_count": 48,
+      "destination": "tokens",
+      "tags": [
+        "tokens",
+        "monstres",
+        "pj",
+        "pnj",
+        "skaven",
+        "chaos"
+      ],
+      "available": false
+    },
+    {
+      "id": "wfrp-immersive-audio-ambiences",
+      "name": "🎵 Ambiances Sonores Spatiales & Musiques",
+      "version": "1.0.0",
+      "category": "other",
+      "description": "Banque de sons d'ambiance et boucles spatialisées 2.5D : Taverne bondée, Orage battant, Crypte lugubre, Tambours Peaux-Vertes et Murmures du Warp.",
+      "author": "LordMadTrix",
+      "thumbnail": null,
+      "download_url": "https://github.com/LordMadTrix/grimoire/releases/download/v0.4.1/wfrp-audio-pack.zip",
+      "size_bytes": 62914560,
+      "file_count": 24,
+      "destination": "audio",
+      "tags": [
+        "audio",
+        "musique",
+        "spatial",
+        "ambiance",
+        "orage"
+      ],
+      "available": false
+    },
+    {
+      "id": "module-heritage-saponatheim",
+      "name": "📜 Module : L'Héritage Maudit des von Saponatheim",
+      "version": "1.0.0",
+      "category": "other",
+      "description": "Aventure complète .grimoirepack avec carte de manoir, murs LOS, zones audio, PNJ configurés, monstres et arbre de quêtes intégré.",
+      "author": "LordMadTrix",
+      "thumbnail": null,
+      "download_url": "https://github.com/LordMadTrix/grimoire/releases/download/v0.4.1/heritage-saponatheim.grimoirepack",
+      "size_bytes": 12582912,
+      "file_count": 6,
+      "destination": "scenarios",
+      "tags": [
+        "aventure",
+        "grimoirepack",
+        "scénario",
+        "wfrp",
+        "quete"
+      ],
+      "available": false
+    }
+  ]
+}

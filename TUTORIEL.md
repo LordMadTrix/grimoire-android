@@ -1,0 +1,709 @@
+# 📖 Le Grand Grimoire — Guide Encyclopédique de A à Z (v0.7.2)
+
+> **L'Outil Ultime pour Maîtres du Jeu TTRPG**  
+> *Table Virtuelle PixiJS v8 · Éditeur Rôliste Ultime (Menus Déroulants, Clic Droit, Inline Dice, Callouts, Mode Zen, Recherche & Split View) · Liseuse PDF 2.0 & Voix IA · Fantasy Map Editor · Bibliothèque Céleste Audio · Wiki Markdown & FTS5 · Compagnon Mobile PWA & Bouclier Anti-Perte · IA Locale Ollama*
+
+---
+
+## 📑 Sommaire Général
+
+1. [Introduction & Philosophie de Grimoire](#1-introduction--philosophie-de-grimoire)
+2. [Installation & Premier Démarrage](#2-installation--premier-démarrage)
+3. [Structure Optimale d'un Coffre (Vault)](#3-structure-optimale-dun-coffre-vault)
+4. [L'Éditeur Markdown & Wiki Intelligent (CodeMirror 6 + FTS5)](#4-léditeur-markdown--wiki-intelligent-codemirror-6--fts5)
+5. [Cartographie : Import, Fantasy Map Editor & Donjons Procéduraux](#5-cartographie--import-fantasy-map-editor--donjons-procéduraux)
+6. [La Table Virtuelle (VTT), Éclairage Dynamique & Atmosphères Météo](#6-la-table-virtuelle-vtt-éclairage-dynamique--atmosphères-météo)
+7. [Murs Line of Sight (LOS), Portes Interactives & Brouillard de Guerre](#7-murs-line-of-sight-los-portes-interactives--brouillard-de-guerre)
+8. [Ambiance Sonore, Studio Soundscape & Audio Spatialisé 2.5D](#8-ambiance-sonore-studio-soundscape--audio-spatialisé-25d)
+9. [Bibliothèque Céleste & Audio Grimoire (Streaming, Diffusion VTT & Packs)](#9-bibliothèque-céleste--audio-grimoire-streaming-diffusion-vtt--packs)
+10. [Liseuse de Campagne PDF 2.0 & Voix Neuronales IA (Le Grimoire Vivant)](#10-liseuse-de-campagne-pdf-20--voix-neuronales-ia-le-grimoire-vivant)
+11. [Gestion des Tokens & ConditionWheel](#11-gestion-des-tokens--conditionwheel)
+12. [Moteur de Combat & Résolution des Tests Opposés (SL Net WFRP)](#12-moteur-de-combat--résolution-des-tests-opposés-sl-net-wfrp)
+13. [Journal de Campagne, Quêtes & Résumés de Session](#13-journal-de-campagne-quêtes--résumés-de-session)
+14. [Compagnon Mobile PWA & Contrôle Tactile](#14-compagnon-mobile-pwa--contrôle-tactile)
+15. [Carnet Nomade du MJ (Version GSM & Dictée Vocale)](#15-carnet-nomade-du-mj-version-gsm-simplifiée--dictée-vocale)
+16. [Assistant Narratif & IA Locale Ollama](#16-assistant-narratif--ia-locale-ollama)
+17. [Boîte à Outils du MJ & Générateurs Aléatoires](#17-boîte-à-outils-du-mj--générateurs-aléatoires)
+18. [Tutoriel Pas à Pas : Préparer et Lancer sa Première Session](#18-tutoriel-pas-à-pas--préparer-et-lancer-sa-première-session)
+19. [Index des Raccourcis Clavier & Astuces Pro](#19-index-des-raccourcis-clavier--astuces-pro)
+20. [Le Guide de l'Herboriste & Lapidaire (Alchimie, Cueillette, Forge)](#20-le-guide-de-lherboriste--lapidaire-alchimie-cueillette-forge)
+21. [Tracking Optique Table & Figurines 3D (Webcam, ArUco & Anneaux STL)](#21-tracking-optique-table--figurines-3d-webcam-aruco--anneaux-stl)
+
+---
+
+## 1. Introduction & Philosophie de Grimoire
+
+**Grimoire** a été conçu pour libérer le Maître du Jeu de la surcharge cognitive. Plutôt que de jongler entre cinq fenêtres ouvertes (un traitement de texte, une table virtuelle lourde sur navigateur, un lecteur de musique, des PDF de règles et un chat Discord), Grimoire centralise tout votre univers dans une seule application native ultra-rapide.
+
+### Les 4 Piliers Fondamentaux :
+1. **100% Hors-Ligne & Local** : Aucune dépendance envers un abonnement ou un serveur distant. Vos données vous appartiennent sous forme de simples fichiers texte Markdown et d'images.
+2. **Performances Maximales** : Moteur Rust (Tauri v2) couplé à PixiJS v8 pour un affichage graphique à 60+ FPS constants.
+3. **Zéro Friction pour les Joueurs** : Les joueurs n'installent aucune application. Ils scannent un QR Code local depuis leur smartphone pour accéder à leur fiche en mode PWA.
+4. **Modulaire & Extensible** : Système d'extensions (Addons), formats de packs d'aventures et IA locale sans cloud.
+
+---
+
+## 2. Installation & Premier Démarrage
+
+### Téléchargement
+- **Windows** : Téléchargez le programme d'installation `.msi` ou le setup `.exe` depuis la page [Releases GitHub](https://github.com/LordMadTrix/grimoire/releases).
+- **Linux** : Téléchargez le paquet `.AppImage` ou `.deb`. Rendez le fichier exécutable (`chmod +x Grimoire.AppImage`) et lancez-le.
+- **Lanceur Intelligent pour Développeurs & Linux (`launch.sh`)** :
+  Le projet intègre désormais un script de démarrage intelligent `launch.sh` (`./launch.sh` ou `npm run launch`). Il vérifie automatiquement la présence de Node, npm, Rust/Cargo, les dépendances système Linux (WebKit2GTK, OpenSSL, GTK3), le démon Ollama, libère les ports 5173/5174 occupés et lance Grimoire sans friction.
+
+> 🛡️ **Note sur la sécurité (Windows / Chrome)** :  
+> Grimoire étant un projet open-source en développement actif, Chrome ou Windows SmartScreen peut afficher une alerte de précaution (*« Windows a protégé votre ordinateur »*).  
+> Pour lancer l'application : cliquez sur **« Informations complémentaires »** puis **« Exécuter quand même »** (et sous Chrome, choisissez **« Conserver »**).
+
+### Premier Lancement
+Au premier démarrage, Grimoire vous propose :
+1. **Créer un nouveau Coffre (Vault)** : Choisissez un dossier vide sur votre disque dur. Grimoire créera l'arborescence recommandée.
+2. **Ouvrir un Coffre existant** : Sélectionnez un dossier contenant déjà vos notes ou un ancien vault Obsidian/Grimoire.
+
+> 💡 **Astuce** : Grimoire mémorise votre dernier dossier ouvert et le recharge instantanément lors des prochains démarrages.
+
+---
+
+## 3. Structure Optimale d'un Coffre (Vault)
+
+Un coffre Grimoire est un simple dossier sur votre ordinateur. Voici l'organisation recommandée pour une campagne fluide :
+
+```text
+mon-univers/
+├── 📁 notes/                      ← Vos fiches de lore, PNJ, lieux, quêtes
+│   ├── 📁 pnj/
+│   ├── 📁 lieux/
+│   └── 📁 factions/
+├── 📁 assets/                     ← Images, battlemaps, musiques
+│   ├── 📁 maps/
+│   ├── 📁 tokens/
+│   └── 📁 audio/
+└── 📁 journal/                    ← Compte-rendus de chaque session jouée
+```
+
+---
+
+## 4. L'Éditeur Markdown & Wiki Intelligent (CodeMirror 6 + FTS5)
+
+L'éditeur de Grimoire réinvente la prise de notes pour Maître du Jeu en mariant la légèreté du Markdown brut avec une suite complète d'outils interactifs conçus pour la table.
+
+### 🎲 1. Inline Dice Roller (Lancer de dés interactif au clic)
+- **Détection temps réel** : Toute formule de dés présente dans vos notes (`1d20+5`, `2d6`, `d100`, `4d6k3`, `1d12+2`, `8d6`) se transforme automatiquement en badge interactif orné d'un dé doré 🎲.
+- **Audio procédural** : Chaque clic déclenche un bruitage immersif de dés qui s'entrechoquent (synthétisé en temps réel via la Web Audio API sans aucun fichier sonore externe lourd).
+- **Popup de jet immersif** : Affiche le total, le détail des dés tirés, les **Succès Critiques** (surlignés en vert émeraude) et **Échecs Critiques** (en rouge).
+- **Boutons rapides** : Copiez le résultat dans le presse-papiers ou insérez-le directement dans votre note d'un seul clic !
+
+### 🛡️ 2. Styled Callouts (Encadrés thématiques rôlistes & Obsidian)
+Grimoire affiche directement dans l'éditeur les blocs de citation typés avec une identité visuelle marquée :
+- `> [!NOTE]` ou `> [!INFO]` : Encadré bleu classique d'information générale.
+- `> [!SECRET]` : Cadre ambré doré discret avec cadenas 🔒 pour vos pièges cachés, énigmes et notes secrètes du MJ.
+- `> [!WARNING]` ou `> [!DANGER]` : Alerte rouge intense avec tête de mort 💀 pour dangers mortels.
+- `> [!LOOT]` : Encadré vert émeraude avec gemme 💎 pour récompenses, trésors et objets magiques.
+- `> [!TIP]` : Conseil tactique avec ampoule 💡.
+- `> [!READALOUD]` ou `> [!QUOTE]` : Cadre violet élégant avec parchemin 📜 pour les récits et descriptions à lire à voix haute aux joueurs.
+
+### ☑️ 3. Cases à cocher interactives (Checklists de Quête en Direct)
+- Les listes à puces Markdown `- [ ]` et `- [x]` sont transformées en cases à cocher personnalisées cliquables directement dans l'éditeur.
+- Cliquez sur la case : elle se coche ou se décoche instantanément dans le fichier source et déclenche la sauvegarde automatique transparente.
+
+### 📏 4. Retour à la Ligne Automatique (Line Wrapping) & Lisibilité Parfaite
+- **Césure fluide** : Grimoire intègre l'extension officielle `lineWrapping` de CodeMirror 6. Vos longues descriptions et dialogues s'adaptent désormais dynamiquement à la largeur de votre fenêtre sans jamais dépasser du cadre ni nécessiter d'ascenseur horizontal.
+- **Règles de césure propres** : Césure respectant les mots (`break-word`) et padding latéral optimisé pour un confort de lecture digne d'un livre imprimé.
+
+### 🪄 5. Palette Interactive d'IA Rôliste (<kbd>Ctrl+J</kbd> ou bouton `🪄 Ollama`)
+Pressez <kbd>Ctrl+J</kbd> ou cliquez sur le bouton `🪄 Ollama` pour ouvrir la **Palette Interactive d'IA** au-dessus de vos notes :
+- **Détection automatique du modèle** : Grimoire interroge votre installation Ollama et s'adapte instantanément au modèle disponible (`llama3.2:1b`, `gemma2:2b`, etc.) sans plantage ni configuration complexe.
+- **Sélecteur d'Ambiance en 1 clic** : Basculez entre 6 univers narratifs (🧙‍♂️ Fantasy Héroïque, 🌑 Dark Fantasy, ⚔️ Médiéval Réaliste, 🕵️ Enquête & Mystère, 🚀 Sci-Fi & Cyberpunk, 🛡️ Neutre & Factuel). Fini d'être enfermé dans un seul thème d'ombres !
+- **Actions Rôlistes Prêtes à l'Emploi** :
+  - 🔤 **Corriger l'orthographe & style** : Mode strict qui rectifie la syntaxe, la grammaire et la ponctuation **sans inventer d'histoire imaginaire**, avec bouton de remplacement immédiat dans la note.
+  - ✍️ **Continuer l'écriture** : Développe la scène ou le paragraphe naturellement.
+  - 🏰 **Décrire un lieu / Décor** : Rédige une description sensorielle vivante (visuels, sons, odeurs, lumière).
+  - 👤 **Créer un PNJ** : Génère un profil complet avec secret inavouable et répliques.
+  - ⚔️ **Péripétie & Rebondissement** : 3 complications immédiates pour surprendre les joueurs.
+  - 🎲 **Table de butin & Trésor** : Objets insolites, reliques ou indices.
+  - 📜 **Résumer la note** : Synthèse claire en puces.
+  - 💬 **Consigne libre sur-mesure** : Tapez votre propre instruction (ex: *"Traduis en elfique"*, *"Crée une énigme"*).
+- **Prévisualisation & Application** : Boutons *« ✓ Remplacer dans la note »* ou *« ✓ Insérer à la suite »* pour intégrer le résultat propre sans bloc de citation `>` parasite.
+- **Mini-barre flottante au survol** : Sélectionnez n'importe quel texte pour faire surgir le mini-menu rapide (Décrire, Dialogues, Sensations, Stats ou Palette complète).
+
+### 🗺️ 6. Passerelle Note ⟷ Scènes VTT (`[[map:NomDeScene]]`)
+- Tapez par exemple `[[map:Catacombes Niveau 1]]` dans votre note.
+- Le lien s'affiche avec un badge violet et une boussole de cartographe 🗺️.
+- En cliquant dessus (ou <kbd>Ctrl</kbd>+Clic), Grimoire bascule automatiquement sur l'onglet **Table Virtuelle (VTT)** et charge immédiatement la scène demandée. Idéal pour relier un scénario écrit à vos cartes de jeu !
+
+### 🎵 7. Lecteur d'Ambiance Frontmatter
+- Spécifiez l'ambiance sonore de votre lieu directement dans l'en-tête YAML de la note :
+  ```yaml
+  ---
+  title: La Crypte des Maudits
+  ambiance: dark_dungeon_loop.mp3
+  ---
+  ```
+- Un badge audio interactif apparaît en tête de note. Un simple clic dessus lance la piste dans le Soundscape du VTT sans avoir à chercher le fichier manuellement.
+
+### ✍️ 8. Correcteur Orthographique Bilingue & Fantasy
+- Correcteur Hunspell intégré fonctionnant en tâche de fond (Web Worker) sans aucun ralentissement de frappe.
+- **Français & Anglais** : Dictionnaires complets avec prise en charge avancée des ligatures (`œ`, `æ`), apostrophes courbes et majuscules accentuées.
+- **Dictionnaire Fantasy MJ** : Reconnaît le vocabulaire rôliste (Points de Vie, CA, Gobelours, Tieffelin, Battlemap, Rôliste...).
+- **Contrôle facile** : Indicateur dans la barre d'état permettant de basculer en un clic entre `FR`, `EN` ou de le désactiver.
+
+### ↩️ 9. Annuler / Rétablir & Outils d'Édition
+- Boutons dédiés **↩️ Annuler (<kbd>Ctrl+Z</kbd>)** et **↪️ Rétablir (<kbd>Ctrl+Y</kbd>)** accessibles dans l'en-tête de note, la barre d'outils et directement au sein des infobulles du correcteur d'orthographe.
+- **WikiLinks `[[NomDeLaNote]]`** : Tapez `[[` pour l'autocomplétion instantanée vers n'importe quelle note.
+- **Rétroliens Automatiques (Backlinks)** : Visualisez en bas de page toutes les fiches qui pointent vers la note active.
+- **Recherche Instantanée (FTS5)** : Pressez <kbd>Ctrl+K</kbd> ou <kbd>Ctrl+P</kbd> pour retrouver n'importe quel terme dans tout le coffre en moins de 5 millisecondes.
+- **Vue Graphique 2D** : Cartographie relationnelle D3.js avec simulation physique.
+
+### 🔍 10. Recherche & Remplacement Intégrés (<kbd>Ctrl+F</kbd> / <kbd>Ctrl+H</kbd>)
+- **Recherche Rapide (<kbd>Ctrl+F</kbd>)** : Ouvre le volet de recherche textuelle avec surlignage immédiat de toutes les occurrences dans la note active.
+- **Remplacement Intégré (<kbd>Ctrl+H</kbd>)** : Affiche les champs Chercher et Remplacer pour substituer un terme au cas par cas ou globalement.
+- **Surlignage Automatique (`highlightSelectionMatches`)** : Sélectionner un mot surligne instantanément toutes ses répétitions dans le document (façon VS Code / Obsidian).
+- **Navigation Clavier** : <kbd>Entrée</kbd> pour l'occurrence suivante, <kbd>Shift+Entrée</kbd> pour la précédente, et <kbd>Échap</kbd> pour refermer le volet.
+- **Bouton Loupe 🔍** : Accessible directement dans l'en-tête de la note pour ouvrir la recherche en 1 clic à la souris.
+
+### ⚡ 11. Saisie Fluide & GitHub Flavored Markdown (GFM)
+- **Indentation Directe (<kbd>Tab</kbd> / <kbd>Shift+Tab</kbd>)** : Indentez ou désindentez des blocs entiers de listes ou de paragraphes sans que le curseur ne quitte l'éditeur.
+- **Continuation Intelligente des Listes (<kbd>Entrée</kbd>)** :
+  - Dans une liste à puces (`- `), numérotée (`1. `), de tâches (`- [ ] `) ou de citation (`> `), presser <kbd>Entrée</kbd> insère automatiquement la puce suivante.
+  - Presser <kbd>Entrée</kbd> sur une ligne de puce vide la supprime proprement pour reprendre un paragraphe normal.
+- **Tableaux GFM Complets** : Syntaxe native `| Col 1 | Col 2 |` avec formatage inline (**gras**, *italique*, liens wiki, code).
+- **Encapsulation Automatique d'URL** : Sélectionner un mot ou une phrase et coller un lien (<kbd>Ctrl+V</kbd>) transforme automatiquement la sélection en `[mot](url)`.
+- **Rendu Visuel des Titres & Tâches** : Les titres H1 à H4 s'affichent avec une échelle et une dorure distinctes directement dans l'éditeur brut, et les tâches cochées (`- [x]`) sont automatiquement grisées et barrées.
+
+### 🌓 12. Double Vue Synchronisée (Split View) & Mode Lecture Seule
+Basculez entre trois modes d'affichage depuis le sélecteur dans l'en-tête de note :
+- ✏️ **Éditeur Seul** : Pleine largeur optimisée pour la rédaction fluide sans distraction.
+- 🌓 **Double Vue (Split)** : Éditeur CodeMirror à gauche et rendu HTML en direct à droite. Le défilement est synchronisé de manière fluide et bidirectionnelle sans sauts d'ascenseur.
+- 📖 **Mode Lecture Seule** : Rendu HTML élégant centré en pleine largeur. Idéal pour poser un écran ou un ordinateur portable sur la table de jeu et lire son scénario sans risquer d'altérer le texte par accident.
+
+### 💎 13. Aperçu Rendu Rôliste Enrichi & Dés Cliquables
+- **Callouts Multi-Lignes** : Les blocs de citations consécutifs (`> [!SECRET]`, `> [!LOOT]`, `> [!WARNING]`, etc.) sont regroupés au sein d'un seul encadré stylisé or, émeraude ou rouge avec leurs icônes thématiques.
+- **Véritables Listes HTML Imbriquées** : Rendu structuré avec balises `<ul>` et `<ol>` interprétant le gras, l'italique, le code et les wiki-liens dans chaque puce.
+- **Dés Cliquables dans l'Aperçu** : Toutes les formules de dés (`1d20+5`, `2d6`, etc.) dans le volet d'aperçu deviennent des boutons interactifs (`🎲 1d20+5`) déclenchant un jet physique sonore au clic !
+
+### 🗂️ 14. Menus Déroulants Thématiques & Boutons Réflexes (v0.7.0)
+La barre d'outils supérieure de l'éditeur Markdown a été entièrement repensée pour éliminer l'encombrement visuel des 27 boutons alignés et offrir une navigation fluide et élégante :
+- **Boutons Réflexes Immédiats** : Toujours à portée de clic sur la gauche :
+  - `↩️` Annuler (<kbd>Ctrl+Z</kbd>)
+  - `↪️` Rétablir (<kbd>Ctrl+Y</kbd>)
+  - **B** Gras (<kbd>Ctrl+B</kbd>)
+  - *I* Italique (<kbd>Ctrl+I</kbd>)
+- **5 Menus Déroulants Ergonomiques** :
+  - `🗛 Titres` : Titres H1 à H4 avec icônes de hiérarchie visuelle.
+  - `✍️ Format` : Gras, Italique, Barré (`~~`), Surligné (`==`), Code en ligne, Bloc de code préformaté et Citation.
+  - `☰ Listes` : Liste à puces, Liste numérotée, Liste de tâches (`- [ ]`), Tableau GFM et Ligne de séparation.
+  - `🎲 Blocs & JdR` : Encadrés rôlistes prédéfinis (Note secrète MJ `[!SECRET]`, Butin & Trésor `[!LOOT]`, Danger mortel `[!WARNING]`, Note générale `[!NOTE]`, Récit aux joueurs `[!READALOUD]`), formule de dé interactive, lien de scène VTT (`[[map:Scene]]`) et lecteur d'ambiance frontmatter.
+  - `🔗 Insérer` : Lien Wiki interne (`[[...]]`), Lien Web Markdown, Image et accès direct au Guide complet des raccourcis.
+- **Fermeture Automatique** : Cliquer en dehors ou presser <kbd>Échap</kbd> referme instantanément tout menu ouvert.
+
+### 🖱️ 15. Menu Contextuel au Clic Droit Rôliste & IA (v0.7.0)
+Ne quittez plus votre souris lors de la rédaction de vos scénarios ! Un clic droit n'importe où dans l'éditeur Markdown ouvre un menu contextuel complet adapté aux besoins du MJ :
+- **Barre Rapide Supérieure de Style** : Formatage instantané de la sélection en un clic : **Gras**, *Italique*, ==Surligné==, ~~Barré~~ ou `Code`.
+- **Raccourcis JdR Directs** :
+  - `[[Note]]` : Insère ou transforme la sélection en WikiLink avec autocomplétion.
+  - `🔒 Secret MJ` : Enveloppe le texte dans un encadré `> [!SECRET]`.
+  - `📌 Note` : Insère un encadré d'information générale `> [!NOTE]`.
+  - `☑️ Tâche` : Insère une case à cocher interactive de quête.
+- **Sous-Menus Hiérarchiques au Survol** : Accédez à tous les niveaux de Titres (H1-H4), Listes et Tableaux, Blocs Rôlistes et Liens d'insertion.
+- **🪄 Assistant IA Contextuel** :
+  - Lancer la palette complète (<kbd>Ctrl+J</kbd>).
+  - Correction stricte d'orthographe & de style (sans inventer d'histoire).
+  - Décrire le décor ou le lieu actuel.
+  - Générer un profil de PNJ avec ses secrets.
+  - Lancer une péripétie ou un rebondissement imprévu.
+- **Préservation Intelligente de la Sélection** : Le clic et les interactions dans le menu n'effacent jamais le curseur ni la sélection active dans le texte.
+
+### ⌨️ 16. Guide Interactif des Raccourcis Clavier
+Un clic sur le bouton `⌨️` (ou depuis le menu déroulant `🔗 Insérer`) ouvre une modale d'aide interactive et élégante répertoriant tous les raccourcis essentiels classés par univers : Édition de texte, Outils du MJ & IA, Table Virtuelle (VTT) et Navigation globale.
+
+### 🛡️ 17. Passerelle Directe vers la Vue Joueur & Bouclier Anti-Spoil (v0.7.1)
+Partagez instantanément des extraits de notes, descriptions ou révélations vers l'écran des joueurs et leurs smartphones :
+- **Bouton de partage dédié** dans l'en-tête de l'éditeur pour projeter le contenu actif en un clic.
+- **Bouclier Anti-Spoil Automatique** : Filtre et masque automatiquement les blocs secrets (`> [!SECRET]`), les commentaires privés du MJ et les annotations confidentielles avant la transmission.
+- **Diffusion Ciblée** : Choisissez de diffuser à l'ensemble de la table ou de murmurer discrètement à un joueur précis.
+
+---
+
+## 5. Cartographie : Import, Fantasy Map Editor & Donjons Procéduraux
+
+Grimoire offre trois méthodes complémentaires pour créer votre champ de bataille :
+
+### 1. Importer une Image Externe
+- Placez vos fichiers images dans le dossier `assets/maps/` ou glissez-les directement sur le canevas.
+- Ouvrez le sélecteur de carte dans la barre VTT (icône 🗺️) et cliquez sur votre image.
+- Ajustez la grille en appuyant sur la molette ou en utilisant l'outil de calibration rapide 3x3 cases.
+
+### 2. Le Fantasy Map Editor & Pont Bidirectionnel
+Accessible via la barre d'outils ou un onglet dédié, le Map Editor vous permet de créer des cartes tactiques et régionales de haute qualité avec un confort absolu :
+- **🌟 HUD Flottant d'Actions Rapides** : Barre tactile et compacte au bas de l'écran avec accès instantané aux Presets Magiques, Ambiance, Calques, Mesure, Radar et Mode Zen.
+- **✨ Presets Magiques en 1 Clic** : Génération instantanée d'environnements complets (Auberge médiévale avec salle commune et cellier, Catacombes souterraines, Clairière des Druides avec ruisseau, Archipel tropical).
+- **🧭 Radar & Minimap Interactive** : Vue d'ensemble en temps réel en bas à droite avec cadre doré indiquant votre champ de vision (viewport) et téléportation immédiate par clic ou glissement.
+- **☀️ Atmosphère & Éclairage Dynamique** : Cycle Plein Jour, Crépuscule, Nuit de Lune, Donjon aux Torches, Brume Spectrale et Lune de Sang avec vignettage et texture parcheminée en direct.
+- **👁️ Gestionnaire de Calques (Layers)** : Affichez, masquez (👁️) ou verrouillez (🔒) indépendamment l'Arrière-plan, le Terrain, les Formes de salles, les Tampons/Objets, les Tracés, les Textes et la Grille.
+- **📐 Règle de Mesure Tactique** : Affiche en direct la distance en cases, pieds (`ft`), mètres (`m`) et pixels pour les déplacements de combat.
+- **🧘 Mode Zen (<kbd>Z</kbd>)** : Masque temporairement tous les panneaux pour libérer 100% de l'écran et dessiner dans une immersion totale.
+- **🏔️ Sculpture de Terrain & Côtes** : Pinceaux d'ajout/retrait de terre avec algorithme fractal de Perlin pour générer des îles, archipels et continents réalistes.
+- **🏰 Bibliothèque Massive de Tampons (Stamps)** : Des milliers d'assets HD (Arbres, Montagnes, Châteaux, Villes, Mobilier de Donjon, Navires).
+- **🌲 Outil Scatter (Pinceau de dispersion)** : Posez des forêts denses ou massifs rocheux d'un seul glissement sans répétition artificielle.
+- **✏️ Tracés Vectoriels** : Routes, sentiers, rivières courbes de Bézier et textes calligraphiques (*Cinzel, MedievalSharp*).
+- **🐉 Bouton `Envoyer vers Grimoire VTT`** : Projetez votre carte peinte directement sur la table de jeu active en 1 clic !
+- **💾 Bouton `Campagne`** : Sauvegarde automatique du PNG HD et du fichier projet JSON dans le dossier `assets/maps/` de votre coffre.
+- **✏️ `Modifier dans le Map Editor`** : Depuis la scène VTT Grimoire, réouvrez en 1 clic le plan dans l'éditeur pour y ajouter des détails.
+
+### 3. Le Générateur de Donjons Procédural
+Cliquez sur **🧙‍♂️ Outils MJ → 🏰 Donjon & Murs Procédural** :
+- Choisissez un archétype : **Crypte de Morr**, **Donjon Souterrain**, **Égouts d'Altdorf** ou **Caverne Sauvage**.
+- Réglez la taille de la grille et la densité des salles.
+- Cliquez sur **Générer le Donjon** puis sur **Appliquer au VTT**.
+- **Magie !** Les textures de sol sont peintes et **tous les murs de collision et de ligne de vue (LOS) sont automatiquement tracés**.
+
+---
+
+## 6. La Table Virtuelle (VTT), Éclairage Dynamique & Atmosphères Météo
+
+Le moteur VTT offre une immersion cinématographique grâce à son pipeline de rendu GPU moderne (PixiJS v8).
+
+### Contrôles de la Carte :
+- **Déplacement de la vue (Pan)** : Clic droit enfoncé + glisser ou Clic molette + glisser.
+- **Zoom** : Molette de la souris (centré sur le curseur).
+- **Recentrage** : Bouton 🎯 dans la barre d'outils ou touche `Espace`.
+
+### Gestion de l'Ambiance Lumineuse & Filtres Atmosphériques :
+Dans la barre d'outils VTT :
+- **☀️ Jour** : Éclairage naturel total sans ombre globale.
+- **🌅 Crépuscule** : Voile ambré chaud avec portée de vue réduite.
+- **🌙 Nuit** : Obscurité bleue profonde nécessitant des torches ou lanternes.
+- **🌑 Ténèbres Absolues** : Obscurité totale ; seuls les rayons de lumière percent le noir.
+- **🌫️ Brume / Brouillard** : Ambiance désaturée avec portée visuelle limitée.
+- **⚡ Flash d'Orage** : Déclenchez un flash stroboscopique synchronisé avec un coup de tonnerre et une suppression temporaire des ombres.
+
+### Narration Vocale IA Météorologique :
+- Cliquez sur l'icône de météo dans la barre d'outils pour ouvrir le panneau météo.
+- Cliquez sur **🗣️ Voix Météo IA** : Grimoire génère une description poétique et viscérale des conditions climatiques et la lit à voix haute avec synthèse vocale neuronale réaliste et auto-ducking musical.
+
+### Torches et Lanternes Scintillantes :
+- Faites un clic droit sur un token → ouvrez ses paramètres ⚙️.
+- Activez **Source de Lumière**, choisissez le rayon (ex: 150px), la couleur (ex: `#e5a853`) et cochez **Scintillement de torche**.
+- La flamme vacillera de manière organique et projettera des ombres dynamiques en temps réel contre les murs !
+
+---
+
+## 7. Murs Line of Sight (LOS), Portes Interactives & Brouillard de Guerre
+
+### Tracer des Murs et des Portes
+1. Activez le mode **Murs (Blueprint)** dans la barre d'outils.
+2. Cliquez sur la carte pour poser les segments de murs.
+3. Pour créer une porte : changez le type en **Porte**. Les portes apparaissent avec une poignée commutable.
+4. En cours de jeu, cliquez simplement sur une porte pour l'**Ouvrir** (la lumière passe) ou la **Fermer** (la lumière est bloquée).
+
+### Brouillard de Guerre Intelligent
+- Activez le mode **Brouillard (FoW)**.
+- Choisissez l'outil **Rectangle** ou **Pinceau Circulaire**.
+- Masquez des zones inexplorées ou découpez des zones à révéler. Côté écran des joueurs, les zones masquées sont totalement noires et les tokens ennemis qui s'y trouvent sont masqués.
+
+---
+
+## 8. Ambiance Sonore, Studio Soundscape & Audio Spatialisé 2.5D
+
+### Mixeur Multi-Pistes & Soundscape
+- Ouvrez le panneau audio dans la barre supérieure.
+- Superposez des ambiances continues : *Pluie*, *Vent*, *Feu de camp*, *Forêt*, *Donjon*, *Taverne*.
+- Double lecteur musical (Piste 1 & Piste 2) avec contrôles de volume indépendants et fondus sonores enchaînés.
+- **Auto-Ducking Musical** : Baisse automatique et douce du volume musical pendant les prises de parole de la synthèse vocale IA.
+
+### SoundBoard d'Effets Spéciaux (SFX)
+- Déclenchez instantanément des effets sonores physiques (Cris, Épées, Magie, Monstres, Tonnerre, Portes, Pièges).
+
+### Zones Audio Spatiales (2.5D)
+1. Activez le mode **Zone Sonore (Audio Zone)**.
+2. Cliquez sur la carte pour définir un point d'origine et étirez le rayon d'écoute (ex: 300px).
+3. Associez-lui une piste sonore (ex: *Bruit d'un torrent d'eau*, *Chants de taverne*, *Feu de camp crépitant*).
+4. Lorsque le groupe s'approche de la zone, le volume sonore augmente progressivement, et diminue lorsqu'ils s'éloignent !
+
+---
+
+## 9. Bibliothèque Céleste & Audio Grimoire (Streaming, Diffusion VTT & Packs)
+
+Accessible via le bouton **📦 Boutique / 🌌 Bibliothèque Céleste** (en bas du panneau latéral gauche ou dans la barre VTT) :
+
+### Catalogue Audio Studio Complet (+800 Pistes) :
+Grimoire intègre une immense collection de pistes audio et bruitages professionnels classés par catégories :
+- ⚔️ **Musiques de Combat** : Thèmes épiques, percussions lourdes, affrontements boss.
+- 🏰 **Horreur & Donjons** : Drones spectraux, cryptes lugubres, pulsations angoissantes.
+- 🍺 **Villes & Tavernes** : Luths médiévaux, ambiance de chopines, marchés animés.
+- 🌲 **Nature & Éléments** : Forêts mystiques, tempêtes de neige, cascades.
+- 🚀 **Sci-Fi & Futuriste** : Synthwave spatiale, moteurs de vaisseaux, pulsations cyberpunk.
+- 🔊 **Bruitages & SFX** : Coups critiques, sorts, serrures, pièges, monstres.
+
+### Le Mini-Lecteur de Streaming Intégré :
+- Cliquez sur n'importe quelle piste du catalogue : le lecteur audio s'active immédiatement en bas de l'écran.
+- **Commandes** : Lecture/Pause, Seekbar temporelle interactive, curseur de volume fin, bouton boucle (Loop).
+- **🎵 Diffuser vers VTT** : Cliquez sur ce bouton pour projeter instantanément la musique sur le canal d'ambiance de la Table Virtuelle Grimoire active !
+- **📥 Télécharger dans le Coffre** : Cliquez sur l'icône de téléchargement pour installer le fichier directement dans `assets/audio/` de votre campagne.
+
+### Accès Direct et Importations de Packs :
+1. **📁 Dossiers Locaux** : Boutons directs vers `📁 Cartes`, `📁 Tokens` et `📁 Audio` pour glisser vos propres fichiers depuis l'Explorateur Windows.
+2. **📥 Importer ZIP** : Glissez une archive `.zip` ou `.grimoirepack` ; Grimoire extrait et indexe tout automatiquement.
+3. **☁️ Google Drive Communautaire** : Accès au catalogue cloud partagé.
+
+---
+
+## 10. Liseuse de Campagne PDF 2.0 & Voix Neuronales IA (Le Grimoire Vivant)
+
+La Liseuse de PDF de Grimoire transforme vos modules et livres de règles en une expérience interactive vivante :
+
+### 1. Analyseur Multi-Colonnes & Désentrelacement Spatial
+- Lit les livres de règles en 1, 2 ou 3 colonnes (AD&D, Dragonlance, D&D 5e, Pathfinder, WFRP) dans l'ordre logique parfait.
+- Réparation automatique des césures de mots en bout de ligne et suppression des interférences entre colonnes voisines.
+
+### 2. Lecteur par Boîte de Sélection Interactive (Drag-to-Select)
+- Maintenez le clic gauche et étirez un rectangle sur n'importe quelle zone de la page.
+- Le texte encadré est immédiatement extrait, analysé et lu à voix haute d'un clic.
+
+### 3. Synthèse Vocale Neuronale IA & Mode Multi-Voix PNJ
+- Moteur Microsoft Azure / Edge TTS haute fidélité avec voix françaises naturelles et expressives.
+- **Mode Multi-Voix PNJ** : Détection automatique des dialogues entre guillemets pour alterner voix de narrateur et voix de personnages.
+
+### 4. Découpeur de Carte VTT en 1 Clic
+- Survolez une illustration de carte ou de plan dans votre PDF.
+- Utilisez l'outil de découpe pour envoyer instantanément l'image comme carte de bataille active sur la Table Virtuelle !
+
+### 5. Handouts & Révélations Joueurs
+- Projetez en 1 clic une illustration, lettre manuscrite ou indice secret sur le second écran joueur et sur les smartphones connectés au HUB Mobile.
+
+### 6. Détection de Dés (« Click-to-Roll »)
+- Toutes les mentions de formules de dés (`1d20+5`, `2d6+3`, `d100`) sont détectées automatiquement dans le texte et transformées en boutons cliquables avec lancer 3D physique et son réel.
+
+### 7. Cartes Narratives Découpées & Résumé IA
+- Onglet **Chapitres** : La page est découpée en cartes de scènes prêtes à jouer (Descriptions 🌲, Dialogues 💬, Combats ⚔️, Évènements 📜) avec temps de lecture estimé.
+- Bouton **🔮 Résumé IA (Ollama)** : Extrait en 5 secondes les Objectifs 🎯, Dangers ⚠️, Secrets 💡 et Trésors 💎 de la page.
+
+---
+
+## 11. Gestion des Tokens & ConditionWheel
+
+### Déposer et Déplacer des Tokens
+- Ouvrez la bibliothèque de tokens (panneau latéral ou raccourci).
+- Glissez un token sur la grille. Il s'aligne automatiquement sur la case.
+- Cliquez et glissez pour déplacer. Une ligne pointillée jaune indique la trajectoire et le nombre de cases parcourues.
+
+### Redimensionnement Express
+- Survolez un token : une poignée circulaire ⬤ apparaît dans le coin inférieur droit.
+- Glissez-la pour ajuster la taille, ou utilisez `Alt + Molette` pour agrandir/rétrécir le token d'un coup de doigt.
+
+### La ConditionWheel (Roue Radiale)
+- Faites un **clic droit** sur n'importe quel token : la **ConditionWheel** apparaît.
+- Cliquez sur une condition (🩸 *Hémorragie*, 💤 *Inconscient*, 🤢 *Empoisonné*, 👁️ *Aveuglé*, 🪢 *Entravé*, 🔥 *Enflammé*, 😱 *Effrayé*, 🛡️ *À terre*).
+- La condition s'affiche sous forme de badge flottant au-dessus du token et se synchronise sur les écrans des joueurs.
+
+### 🪟 Volet Flottant Express Joueurs (HUD) & Drag-and-Drop Direct (v0.7.1)
+- **HUD Flottant Déplaçable** : Fenêtre interactive repositionnable à la souris sur la Table Virtuelle pour garder un œil en permanence sur la table sans masquer le plan de bataille.
+- **Glisser-Déposer Instantané (Drag & Drop)** : Attrapez la pastille d'un joueur (connecté ou hors-ligne) dans le volet et déposez-la directement sur la carte VTT pour y poser ou déplacer immédiatement son token.
+- **Gestion des PV en 1 Clic** : Boutons rapides `[-5]`, `[-1]`, `[+1]`, `[+5]` pour ajuster la santé en plein combat avec mise à jour temps réel sur les fiches mobiles des joueurs.
+- **Tiroir d'Édition Express (`✏️`)** : Modifiez à la volée les PV max, caractéristiques ou mot de passe sans quitter la vue tactique.
+- **Persistance Définitive des Comptes (`.grimoire/player_accounts.json`)** : Sauvegarde permanente et restauration automatique de l'ensemble des fiches et de l'avancement des joueurs sur disque.
+
+---
+
+## 12. Moteur de Combat & Résolution des Tests Opposés (SL Net WFRP)
+
+### Initialisation du Combat
+1. Cliquez sur le bouton **⚔️** de la barre d'outils pour démarrer le combat.
+2. Cliquez sur **⚡ Init** pour tirer l'initiative de tous les combattants ou classez-les par ordre décroissant d'Agilité.
+3. Utilisez les flèches **Suivant / Précédent** pour faire défiler les tours. Une bannière "AU TOUR DE..." annonce le combattant actif.
+
+### Calculateur de Tests Opposés WFRP (Degrés de Succès Nets)
+Ouvrez **🧙‍♂️ Outils MJ → 💥 Calculateur de Dégâts → Onglet 🎯 Opposition WFRP (SL)** :
+1. **Attaquant** : Entrez la Capacité de Combat (ex: 55) et le jet de dé réalisé (ex: 23). Grimoire calcule instantanément les Degrés de Succès (SL: +3).
+2. **Défenseur** : Entrez sa compétence d'Esquive ou de Parade (ex: 40) et son jet (ex: 62) (SL: -2).
+3. **Résolution Automatique** :
+   - Grimoire calcule le **SL Net (+5 pour l'attaquant)**.
+   - **Localisation du coup** : Les dés de l'attaquant sont inversés (23 → 32 = Torse).
+   - **Dégâts finaux** : Dégâts de l'arme + SL Net - (Endurance + Armure de la zone ciblée).
+
+---
+
+## 13. Journal de Campagne, Quêtes & Résumés de Session
+
+Accessible via **🧙‍♂️ Outils MJ → 📜 Journal de Quêtes & Campagne** :
+
+### Suivi Structuré des Quêtes
+- **Catégories** : ⭐ Quête Principale, 🗡️ Quête Secondaire, 👂 Rumeur / Piste, 🔒 Secret du MJ.
+- **Étapes interactives** : Listez les objectifs clés (`[x] Interroger le prêtre`, `[ ] Trouver la clé d'argent`). Cochez-les en direct lors de la session.
+- **Récompenses & PNJ** : Renseignez les gains d'XP prévus, couronnes d'or et le nom du commanditaire.
+
+### 📢 Diffusion du Résumé de Session en 1 Clic
+- Cliquez sur le bouton **📢 Diffuser Résumé de Session**.
+- Grimoire compile automatiquement la date impériale actuelle, les quêtes accomplies, les monstres affrontés et les notes.
+- Le texte Markdown est copié dans votre presse-papier et **diffusé instantanément sous forme de parchemin sur les smartphones de tous vos joueurs** !
+
+---
+
+## 14. Compagnon Mobile PWA & Contrôle Tactile
+
+Vos joueurs n'ont rien à installer : ils jouent depuis Safari, Chrome ou Firefox sur leur smartphone.
+
+### Connexion des Joueurs
+1. Cliquez sur le bouton **📱 Mobile** de la barre d'outils pour ouvrir le QR Code.
+2. Chaque joueur scanne le QR Code avec son appareil photo pour ouvrir la web app.
+3. Ils renseignent leur nom et mot de passe de session.
+
+### Fonctionnalités Mobiles Exclusives :
+- **👁️ Screen Wake Lock (Anti-Veille)** : Bouton dédié en haut de l'écran pour empêcher le smartphone de s'éteindre tout au long de la partie.
+- **🕹️ D-Pad Déplacement VTT** : Un pad directionnel sur l'onglet Combat permet au joueur de déplacer son propre pion case par case sur la carte du MJ avec un retour tactile (vibration).
+- **🩸 Fiche Joueur Interactive** : Jauge de Vitalité sous forme de fiole de sang, caractéristiques, compétences, inventaire et fortune.
+- **🎨 Sketchpad Collaboratif** : Les joueurs dessinent leur plan tactique au doigt sur leur écran ; le tracé apparaît en direct sur l'écran du MJ.
+- **🎹 Soundboard Joueur** : Les joueurs peuvent déclencher des sons d'ambiance pour animer la table.
+
+---
+
+## 15. Carnet Nomade du MJ (Version GSM Simplifiée & Dictée Vocale)
+
+Pour le Maître du Jeu qui souhaite préparer ses parties en déplacement (transports, pause déjeuner, canapé) sans allumer son ordinateur, Grimoire propose une **application web mobile simplifiée et optimisée pour smartphone** accessible via `docs/carnet-mj.html` ou directement sur le réseau local à `http://[IP]:7438/mj`.
+
+### 📱 Les Atouts du Carnet Nomade :
+1. **🎙️ Dictée Vocale Immédiate** : Touchez l'icône micro pour dicter vos idées de scènes, descriptions de lieux et dialogues de PNJ. Vos paroles sont transcrites en texte Markdown structuré sans fautes.
+2. **🔄 Synchronisation Bidirectionnelle PC <-> GSM** :
+   - **Envoi (Mobile -> PC)** : Cliquez sur le bouton **« ⚡ Vers PC »** pour injecter directement votre note dans `Notes/Mobile/[titre].md` avec notification de bureau sur votre ordinateur.
+   - **Réception (PC -> Mobile)** : Ouvrez le tiroir latéral et cliquez sur l'onglet **« 💻 Sur mon PC »** : parcourez tout votre Vault Grimoire en direct, filtrez vos scénarios et téléchargez n'importe quelle note en 1 clic pour la lire et l'éditer sur votre smartphone !
+3. **🎲 Générateur Aléatoire Nomade & Haptique** :
+   - En panne d'inspiration en pleine session ? Cliquez sur **« 🎲 Générateur »** pour tirer instantanément un PNJ complet (avec ascendance, rôle, trait et secret inavouable), un lieu avec ambiance sensorielle, une rumeur de taverne ou un trésor/relique.
+   - Cliquez sur **« 📥 Insérer dans la note »** pour coller le résultat sous le curseur.
+   - Retours haptiques : Chaque jet de dé ou génération déclenche une vibration tactile sur votre téléphone.
+4. **💾 100% Autonome & Hors-Ligne** : Toutes vos notes sont persistées dans votre téléphone (`localStorage`). Vous pouvez écrire sans aucune connexion internet ni serveur actif.
+5. **✨ Modèles JDR Intégrés** :
+   - `📜 Scène` : Squelette rapide (Lieu, Objectif, Ambiance, Événement déclencheur).
+   - `👤 PNJ` : Fiche PNJ express (Rôle, Caractère, Secret inavouable).
+   - `🗝️ Secret MJ` : Encadré masqué avec callout `> [!SECRET]`.
+   - `💰 Trésor` : Liste de monnaies, reliques et parchemins.
+   - `🎲 1d100` : Jet de dé aléatoire tactile pour trancher un imprévu.
+6. **📲 Export & Partage Universel** : Téléchargement en 1 clic du fichier `.md` sur le smartphone, ou partage natif vers WhatsApp, AirDrop, Google Drive ou e-mail.
+
+### 🛡️ Sécurité & Bouclier Anti-Perte de Données (v0.6.9) :
+Pour garantir l'intégrité absolue de vos récits entre votre smartphone et votre PC Grimoire :
+1. **Protection Anti-Effacement** : L'envoi depuis le mobile et le serveur Rust bloquent formellement l'écrasement d'un fichier existant par une note vide ou blanche.
+2. **Sauvegardes Automatiques Préventives (`.grimoire_backups/mobile_sync/`)** : Dès qu'une note mobile met à jour une note existante sur votre ordinateur, une copie de secours horodatée est archivée dans votre Vault avant toute écriture. Vos versions antérieures ne sont jamais perdues.
+3. **Détection des Conflits Horodatés** : Si vous avez modifié une note sur votre PC après la date de votre note mobile, la version PC est préservée et la note du smartphone est sauvegardée sous `[nom]_conflit_mobile_[timestamp].md` avec notification système.
+4. **Duplication Sécurisée sur Smartphone** : Si vous téléchargez une note depuis votre PC qui existe déjà localement sur votre téléphone avec des modifications différentes, une boîte de dialogue vous propose de créer une copie séparée `[Titre] (PC)` pour protéger vos notes mobiles.
+5. **Préservation des Chemins (`pcPath`)** : Les notes téléchargées du PC conservent leur arborescence exacte pour se synchroniser au bon endroit sans créer de doublons.
+
+### 🚀 Guide Rapide d'Installation PWA sur GSM :
+- **Sur iPhone (Safari)** : Ouvrez la page, touchez l'icône de partage (carré avec flèche) > sélectionnez **« Sur l'écran d'accueil »**.
+- **Sur Android (Chrome)** : Touchez les trois points ⋮ > appuyez sur **« Installer l'application »** ou **« Ajouter à l'écran d'accueil »**.
+- L'application se lance désormais en plein écran comme une vraie application native !
+
+---
+
+## 16. Assistant Narratif & IA Locale Ollama
+
+Grimoire intègre un assistant rôliste d'élite propulsé par vos modèles d'IA locaux (Llama 3.2, Gemma 2, Mistral, Qwen...) via **Ollama**. Vos notes et idées ne transitent par aucun serveur cloud : tout s'exécute **100% hors-ligne sur votre processeur ou votre carte graphique**.
+
+### 🛠️ 1. Installation Facile & Sans Droits Administrateur
+- **Sous Linux** : Une commande officielle dans votre terminal suffit : `curl -fsSL https://ollama.com/install.sh | sh`. Grimoire propose un bouton de copie en un clic et rafraîchit immédiatement son état.
+- **Téléchargement automatique** : L'assistant d'onboarding Grimoire installe le moteur dans votre espace utilisateur local (`app_local_data_dir/bin`), éliminant tout blocage de permissions root ou admin.
+- **Détection automatique du port & des modèles** : Grimoire interroge en priorité le démon système sur le port standard `11434`. Si vous avez déjà un modèle installé (ex : `llama3.2:1b`), Grimoire le détecte automatiquement et l'active immédiatement, sans forcer un modèle manquant ni planter !
+
+### 🎭 2. Les 6 Ambiances & Styles Narratifs au Choix
+Ne soyez plus contraint par un style unique ! Grimoire propose un sélecteur d'ambiance direct (dans la palette et dans les Paramètres ⚙️) :
+1. 🧙‍♂️ **Fantasy Héroïque** (Style D&D / Pathfinder) : Descriptions épiques, magie vivante, bravoure et panache. *(Sélectionné par défaut)*
+2. 🌑 **Dark Fantasy** (Style Warhammer / Dark Souls) : Menace viscérale, corruption, suspense et obscurité.
+3. ⚔️ **Médiéval Réaliste** (Style Historique) : Rigueur matérielle, détails d'époque et authenticité sans surnaturel abusif.
+4. 🕵️ **Enquête & Mystère** (Style Cthulhu / Polar) : Indices voilés, atmosphère feutrée, suspense et faux-semblants.
+5. 🚀 **Sci-Fi & Cyberpunk** (Style Cyberpunk / Starfinder) : Technologie avancée, néons urbains et argot futuriste.
+6. 🛡️ **Neutre & Factuel** : Réponses claires, chirurgicales et concises (idéal pour les règles, calculs et fiches).
+
+### 🪄 3. La Palette de Prompts en Session (<kbd>Ctrl+J</kbd>)
+Au cœur de l'éditeur de notes, appuyez sur <kbd>Ctrl+J</kbd> (ou cliquez sur `🪄 Ollama`) pour ouvrir le menu d'actions contextuelles :
+- **🔤 Corriger l'orthographe & style** : Mode correcteur strict qui respecte scrupuleusement votre texte d'origine. Il ne brode **aucune fiction** et remplace directement la sélection dans la note au clic sur *« ✓ Remplacer dans la note »*.
+- **✍️ Continuer l'écriture** : Rédige 1 à 2 paragraphes cohérents pour enchaîner sur votre dernière phrase.
+- **🏰 Décrire un lieu / Décor** : Révèle les odeurs de feu de bois, le bruit des pavés humides ou la lueur des vitraux.
+- **👤 Créer un PNJ** : Génère nom, rôle, manie distinctive, secret inavouable et citations.
+- **⚔️ Péripétie & Rebondissement** : 3 complications inattendues pour dynamiser une scène qui s'étire.
+- **🎲 Table de butin & Trésor** : 4 objets intrigants avec détails mystiques adaptés à votre niveau.
+- **📜 Résumer la note** : Puces synthétiques prêtes à être partagées ou relues rapidement en jeu.
+- **💬 Prompt libre sur-mesure** : Une consigne totalement personnalisée pour vos besoins spécifiques.
+
+### 🧙‍♂️ 4. Modules Narratifs Avancés (Menu Outils MJ)
+Accessible via **🧙‍♂️ Outils MJ → 🤖 Assistant IA & Narratif** :
+1. **Descriptions d'Ambiance de Scène** : Sélectionnez un décor et une émotion pour obtenir une prose prête à déclamer.
+2. **Générateur d'Accroches de Quêtes** : Intrigues adaptées à la classe ou au passé des aventuriers.
+3. **Diffusion Handout Joueurs** : Projetez en un clic la description textuelle sur les smartphones de vos joueurs connectés au Hub Mobile.
+
+---
+
+## 17. Boîte à Outils du MJ & Générateurs Aléatoires
+
+Tous situés dans le menu déroulant **🧙‍♂️ Outils MJ** :
+
+- **🛡️ Écran Tactique (Dashboard)** : Vue synthétique de tous les PJ (PV, Blessures, Points de Destin, Éléments clés).
+- **🩸 Blessures Critiques & Mutations** : Tables complètes WFRP avec tirage aléatoire et application automatique aux fiches.
+- **🛍️ Générateur de Marchands** : Créez une échoppe (Apothicaire, Armurier, Prêteur sur gages) avec inventaire pondéré et prix négociables.
+- **🎭 Système de Murmures & Rumeurs** : Générez des rumeurs vraies, fausses ou déformées à distiller aux PJ.
+- **🕸️ Carte des Relations PNJ** : Visualisez les liens d'alliance, d'amour ou de rivalité entre vos personnages non-joueurs.
+
+---
+
+## 18. Tutoriel Pas à Pas : Préparer et Lancer sa Première Session
+
+Voici la check-list idéale pour préparer et mener votre première partie sur Grimoire en moins de 15 minutes :
+
+```markdown
+### Étape 1 : Préparation du Scénario (Avant la partie)
+- [ ] Créez une note `scenarios/session-01.md` avec vos grandes scènes et descriptions.
+- [ ] Ouvrez le **Journal de Quêtes** et créez votre quête principale avec ses 3 premières étapes.
+- [ ] Importez votre carte, peignez-la dans le **Fantasy Map Editor** ou générez un donjon procédural.
+- [ ] Dans la **Bibliothèque Céleste Audio**, choisissez 2 pistes musicales et préparez vos ambiances.
+- [ ] Placez 2 ou 3 **Zones Audio Spatiales** sur les points chauds de la carte.
+
+### Étape 2 : Installation de la Table (10 minutes avant l'arrivée des joueurs)
+- [ ] Lancez Grimoire sur votre ordinateur.
+- [ ] Cliquez sur **🖥️ Vue Joueur** et glissez cette fenêtre sur votre second écran ou téléviseur.
+- [ ] Cliquez sur **📱 Mobile** et affichez le QR Code de connexion.
+- [ ] Les joueurs scannent le QR Code et rejoignent la partie.
+
+### Étape 3 : Déroulement de la Partie
+- [ ] Dévoilez la carte au fur et à mesure avec le **Brouillard de Guerre**.
+- [ ] Ajustez l'ambiance lumineuse (Jour → Crépuscule → Ténèbres) selon l'heure de jeu.
+- [ ] Utilisez la **Liseuse PDF 2.0** pour lire les descriptions avec la synthèse vocale IA.
+- [ ] Démarrez le tracker de combat avec **⚔️** lors des affrontements.
+- [ ] À la fin de la séance : cliquez sur **📢 Diffuser Résumé de Session** pour récompenser vos joueurs !
+```
+
+---
+
+## 19. Index des Raccourcis Clavier & Astuces Pro
+
+| Raccourci | Contexte | Action |
+| :--- | :--- | :--- |
+| `Ctrl + K` / `Ctrl + P` | Partout | Palette de commande & recherche instantanée (FTS5) |
+| `Clic Droit` | Éditeur Markdown | Menu contextuel rôliste (Formatage rapide, Blocs JdR, IA) |
+| `Ctrl + F` | Éditeur Markdown | Rechercher dans la note active (avec surlignage auto) |
+| `Ctrl + H` | Éditeur Markdown | Rechercher & Remplacer dans la note active |
+| `Tab` / `Shift + Tab` | Éditeur Markdown | Indenter / désindenter le paragraphe ou la liste |
+| `Entrée` | Éditeur Markdown | Continuer automatiquement liste à puces, numérotée ou tâches |
+| `F11` | Éditeur Markdown | Activer / Désactiver le Mode Zen (Plein écran épuré) |
+| `Échap` | Éditeur (Mode Zen / Menus) | Quitter le Mode Zen ou fermer les menus contextuels |
+| `Ctrl + Z` / `Ctrl + Y` | Éditeur / VTT / Map Editor | Annuler / Rétablir la dernière action |
+| `Ctrl + J` | Éditeur Markdown | Palette de prompts & assistant IA sur la sélection |
+| `Ctrl + B` / `Ctrl + I` | Éditeur Markdown | Mettre le texte en Gras / Italique |
+| Bouton `⌨️` | Barre d'outils | Ouvrir le Guide interactif complet des raccourcis |
+| `Alt + Molette` | VTT (Token survolé) | Redimensionnement rapide du token |
+| `Poignée ⬤` | VTT (Token survolé) | Redimensionner manuellement le token |
+| `Clic Droit Token` | VTT | Ouvre la ConditionWheel (8 statuts) |
+| `Clic Droit Glisser` | VTT / Map Editor | Déplacement panoramique de la carte (Pan) |
+| `Molette` | VTT / Map Editor | Zoom avant / arrière |
+| `Espace` | VTT | Recentrer la caméra sur le groupe de tokens |
+| `1` à `9` | Mode Murs | Sélectionner un outil de tracé |
+
+---
+
+## 20. Le Guide de l'Herboriste & Lapidaire (Alchimie, Cueillette, Forge)
+
+Grimoire embarque un **compendium complet d'herboristerie fantastique** : flore médicinale et vénéneuse, alchimie, bestiaire récoltable, minéraux, gemmes et forge. Tout est jouable en séance, avec les jets de dés intégrés.
+
+### 🌿 Ouvrir le Guide
+Dans la barre d'outils de la **Table Virtuelle (VTT)**, ouvrez le menu des outils et cliquez sur **`🌿 Guide de l'Herboriste`**. Une fenêtre plein écran s'ouvre avec 11 onglets.
+
+### 📖 Les 20 Ateliers & Simulateurs
+| Onglet | Usage en séance |
+|--------|-----------------|
+| 📖 **Grimoire** | Livre à pages (◀ ▶) : règles de récolte, herbier illustré, recettes — parfait à projeter ou lire à voix haute. |
+| 🌿 **Herbier** | 97 plantes : recherche, filtres par biome/rareté, favoris ❤️, fiche détaillée avec illustration botanique. Bouton **➕ Plante** pour créer vos propres plantes *homebrew* et **📜 Handout** pour générer une planche d'indice parcheminée imprimable avec sceau de cire. |
+| ⚗️ **Alchimie** | Recettes de potions avec ingrédients cliquables, **jet de concoction d20** contre le DD de la recette, labo avancé (synergies plantes + minéraux) et générateur de tables de potions aléatoires. |
+| 💀 **Poisons** | Compendium des poisons : vecteurs, conditions infligées, **antidotes liés aux plantes**, détection et **Distillerie de venins de monstres**. |
+| 🍄 **Fongarium** | Mycologie des cavernes : 8 champignons bioluminescents & toxiques, chambre de culture sur substrat, test de sauvegarde aux spores. |
+| 🧭 **Cueillette** | Simulateur de récolte : choisissez biome + météo + durée, lancez le d20, obtenez plantes et rencontres. |
+| 🌱 **Serre** | Jardin botanique interactif : 4 bacs de culture, arrosage, engrais (humus, phénix, lune), croissance au repos long et chaudron d'hybridation. |
+| 🧺 **Séchage** | 4 techniques de conservation (séchoir suspendu, teinture-mère, salaison, miel sauvage), durée de garde et bonus de conservation. |
+| 🎒 **Sacoche** | Inventaire tactique à 12 compartiments matelassés (fioles, herbes, gemmes, outils), jauge de fragilité et simulateur de casse aux chutes et coups critiques. |
+| 📜 **Quêtes** | Générateur procédural d'accroches de taverne, rumeurs de filons minéraux, gardiens de bestiaire et récompenses en PO. |
+| 🗺️ **Guide** | Tables de DD par biome et rareté, les 4 phases de la cueillette, rencontres de fourragement d20 et **sosies toxiques**. |
+| 🐺 **Bestiaire** | 42 créatures dont on récolte des composants (venin, organes, écailles, spores) avec DD et risques en cas d'échec. |
+| ⛏️ **Minéraux** | Catalogue de minerais magiques + simulateur d'extraction (critique au 20, catastrophe au 1). |
+| 🔨 **Forge** | Recettes de forge naine : choix du foyer, trempe, sertissage de gemmes, composants de monstres. |
+| 💎 **Lapidaire** | 32 gemmes avec **calculateur en Goltors** (Naheulbeuk), **Atelier de Taille** (ébauche, facettage, meules) et **Prospection alluviale & casse de géodes**. |
+| 💍 **Joaillerie** | Établi de sertissage runique : combinez 5 supports forgés (anneau, torque, dague...) avec 5 métaux nobles et vos gemmes taillées. Rendu SVG dynamique et export de fiche magique. |
+| 🌙 **Astral** | Almanach céleste : 8 phases lunaires, constellations de Fangh, marées de sève et résonance tellurique en temps réel. |
+| ⚖️ **Marché** | Cours régionaux des 5 cités de Fangh (Glargh, Waldorg...) et mini-jeu de négociation au d20 face aux marchands PNJ. |
+| 🎲 **Fiascos & Chaos** | Table de magie sauvage : 20 fiascos comiques et 20 prodiges inattendus au d100 pour pimenter vos jets critiques. |
+| 🖨️ **PDF** | Exportez un **livret A4 imprimable** (format poche ou grand grimoire) avec vos favoris. |
+| 🎧 **Ambiance** | Lecteur d'ambiances sonores procédurales Web Audio (Forêt, Torrent, Mine, Alchimie) sans aucun fichier audio externe requis. |
+
+### 🔍 Recherche Globale
+La barre de recherche dans l'en-tête du Guide fouille **plantes, créatures, gemmes et minéraux** d'un coup — idéale quand un joueur demande *« je peux trouver quoi avec cette racine ? »* au milieu d'une scène.
+
+### 💾 Persistance & Homebrew
+Vos plantes et créatures personnalisées, ainsi que vos favoris, sont **sauvegardés automatiquement** (localStorage) et retrouvés à chaque ouverture.
+
+> 📚 **Source** : la base de plantes s'appuie notamment sur le *Guide to Herbs for RPGs* de Shaun Hately (1996, netbook libre) et sur les tables de gemmes en Goltors du *Donjon de Naheulbeuk*, adaptés en français au format Grimoire.
+
+---
+
+## 21. Tracking Optique Table & Figurines 3D (Webcam, ArUco & Anneaux STL)
+
+Grimoire permet d'allier le plaisir du jeu sur table réelle (vos figurines physiques peintes à la main) et les super-pouvoirs du numérique (brouillard de guerre dynamique, vision nocturne, effets de sorts).
+
+Grâce à une webcam zénithale (placée au-dessus de la table ou sur votre vidéoprojecteur), le système détecte la position de vos figurines physiques par **marqueurs optiques ArUco 4x4** et synchronise les pions virtuels en temps réel.
+
+```
+       [ Webcam au Zénith ou Rétroprojecteur ]
+                         │  (Flux vidéo USB)
+                         ▼
+        ┌───────────────────────────────────┐
+        │   Grimoire VTT (Tracking Optique) │
+        │    • Calibration Homographique 4-pts
+        │    • Détection ArUco 4x4 (0-49)   │
+        │    • Lissage EMA + Deadband       │
+        └─────────────────┬─────────────────┘
+                          │ (Position x, y sur la map)
+                          ▼
+       [ Table Réelle : Figurines + Bagues 3D ]
+          └── Révélation instantanée du Brouillard de Guerre !
+```
+
+### 1. Imprimer les Marqueurs ArUco
+1. Sur la Table Virtuelle VTT, ouvrez le panneau de tracking optique via **`📷 Caméra`** ou **`Options VTT → Tracking Optique`**.
+2. Cliquez sur **`🖨️ Imprimer Marqueurs ArUco`**.
+3. Choisissez le diamètre adapté à vos socles :
+   - **15 mm** : Idéal pour figurines de 25mm / socles compacts.
+   - **20 mm** : Standard universel (D&D, Pathfinder, Warhammer).
+   - **25 mm** : Grands monstres, cavaliers et boss (socles 40-50mm).
+4. Cliquez sur **`🌐 Ouvrir dans le Navigateur`** (ou *Enregistrer HTML*).
+5. Imprimez la page avec une échelle à **100%** (sans mise à l'échelle automatique de l'imprimante) sur du papier blanc mat standard ou adhésif.
+
+### 2. Télécharger & Imprimer les Bagues STL 3D
+Si vous disposez d'une imprimante 3D (FDM ou Résine) :
+1. Dans le panneau de tracking optique, descendez à la section **`Modèles 3D (.STL)`**.
+2. Cliquez sur **`💾 Télécharger le Pack Complet (5 fichiers STL)`** ou téléchargez individuellement :
+   - `bague_figurine_25mm.stl` (Diamètre intérieur 25.4mm - socle Medium standard).
+   - `bague_figurine_28mm.stl` (Diamètre intérieur 28.5mm - socle Heroic standard).
+   - `bague_figurine_32mm.stl` (Diamètre intérieur 32.5mm - socle Large).
+   - `bague_figurine_50mm.stl` (Diamètre intérieur 50.8mm - socle Huge/Monster).
+   - `corniere_calibration_table.stl` (Cornière en L avec encoche pour étalonner les 4 coins de la table).
+3. **Paramètres d'impression recommandés** :
+   - Matériau : PLA (ou résine standard).
+   - Hauteur de couche : `0.20 mm`.
+   - Remplissage : `15% à 20%` (Gyroid ou Grille).
+   - Pas de supports requis ! Temps d'impression : ~8 minutes par bague.
+4. Découpez une gommette ArUco et collez-la sur le plat supérieur de la bague. Clippez la bague sous votre figurine.
+
+### 3. Calibration de la Caméra en 4 Clics
+1. Dans Grimoire, cochez **`Activer le Tracking Optique`** et sélectionnez votre webcam dans la liste.
+2. Cliquez sur **`🎯 Étalonner la Table (4 Coins)`**.
+3. Dans la fenêtre de retour vidéo, cliquez successivement sur les 4 coins de votre surface projetée :
+   1. Coin Haut-Gauche (Coin 1)
+   2. Coin Haut-Droit (Coin 2)
+   3. Coin Bas-Droit (Coin 3)
+   4. Coin Bas-Gauche (Coin 4)
+4. La matrice d'homographie est calculée instantanément via l'algorithme Gauss-Jordan : même si votre webcam est inclinée ou désaxée, les coordonnées sont parfaitement recalées sur la grille de votre carte !
+
+### 4. Lier une Figurine Physique à un Pion Virtuel
+1. Sur la carte VTT, faites un double-clic ou clic droit sur un pion (ex: *Paladin*) pour ouvrir ses propriétés.
+2. Dans le champ **`Marqueur Physique (ID ArUco)`**, entrez l'ID de la gommette collée sous la figurine (ex: `1`). L'icône ArUco correspondante s'affiche en aperçu direct.
+3. Cochez **`Révéler Fog of War automatiquement`** si vous souhaitez que la figurine dissipe les ténèbres au fur et à mesure que le joueur la déplace avec ses mains sur la table !
+
+---
+
+💖 **Soutenir le projet** : Si vous aimez Grimoire et souhaitez encourager son développement continu, rejoignez la communauté sur [Patreon (LordMad)](https://www.patreon.com/cw/LordMad) !
+
+*Le Grand Grimoire — Conçu et développé avec passion pour tous les Maîtres du Jeu par MadTrix.*

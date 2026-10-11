@@ -1,0 +1,6 @@
+{
+  "name": "Grimoire",
+  "description": "TTRPG Game Master companion with VTT tactical maps, initiative combat tracker, campaign grimoire, compendium and dice roller",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

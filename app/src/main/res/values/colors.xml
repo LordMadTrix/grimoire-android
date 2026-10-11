@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="grimoire_bg">#0A0C10</color>
+    <color name="grimoire_card">#11141B</color>
+    <color name="grimoire_accent">#E5A853</color>
+    <color name="grimoire_purple">#8B5CF6</color>
+    <color name="grimoire_border">#1F2937</color>
+</resources>

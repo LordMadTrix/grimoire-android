@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Grimoire Carnet MJ — Mobile</title>
+  <meta name="description" content="Carnet nomade pour Maître du Jeu TTRPG : écrivez vos scénarios, PNJ et loots sur smartphone et synchronisez-les en 1 clic avec Grimoire PC.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- PWA & Mobile Capabilities -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Carnet MJ">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0a0c10">
+
+  <!-- Polices & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            grimoire: {
+              bg: '#0a0c10',
+              card: '#121620',
+              surface: '#1a202c',
+              border: '#2d3748',
+              accent: '#e5a853',
+              accentHover: '#f3c178',
+              accentDark: '#b87e28',
+              danger: '#ef4444',
+              success: '#22c55e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0a0c10;
+      color: #e2e8f0;
+      font-family: 'Outfit', sans-serif;
+      touch-action: manipulation;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+    .glass-header {
+      background: rgba(10, 12, 16, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    
+    /* Scrollbars ergonomiques et visibles */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(10, 12, 16, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(229, 168, 83, 0.35);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(229, 168, 83, 0.75);
+    }
+
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    @keyframes pulse-mic {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .recording-active {
+      animation: pulse-mic 1.4s infinite;
+      background-color: #ef4444 !important;
+      color: #ffffff !important;
+      border-color: #ef4444 !important;
+    }
+
+    /* Rendu Markdown simple */
+    .preview-body h1 { font-size: 1.5rem; font-weight: 800; color: #e5a853; margin-top: 1rem; margin-bottom: 0.5rem; }
+    .preview-body h2 { font-size: 1.25rem; font-weight: 700; color: #f3c178; margin-top: 0.8rem; margin-bottom: 0.4rem; }
+    .preview-body h3 { font-size: 1.1rem; font-weight: 600; color: #cbd5e1; margin-top: 0.6rem; margin-bottom: 0.3rem; }
+    .preview-body p { margin-bottom: 0.75rem; line-height: 1.6; }
+    .preview-body ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.75rem; }
+    .preview-body blockquote { border-left: 3px solid #e5a853; padding-left: 0.75rem; color: #94a3b8; font-style: italic; margin: 0.75rem 0; }
+    .preview-body code { font-family: 'JetBrains Mono', monospace; background: rgba(255,255,255,0.08); color: #e5a853; padding: 2px 5px; border-radius: 4px; font-size: 0.9em; }
+    .preview-body .secret-box { background: rgba(229,168,83,0.08); border: 1px dashed rgba(229,168,83,0.4); border-radius: 8px; padding: 10px; margin: 10px 0; }
+    .preview-body .secret-title { font-weight: 700; color: #e5a853; font-size: 0.85em; text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+  </style>
+</head>
+<body class="h-full min-h-[100dvh] flex flex-col selection:bg-grimoire-accent selection:text-black overflow-x-auto overflow-y-auto">
+
+  <!-- ================= TOP BAR (STATIONARY) ================= -->
+  <header class="glass-header border-b border-grimoire-border/80 px-2.5 sm:px-4 py-2 flex items-center justify-between z-30 flex-shrink-0 gap-1.5 min-w-0">
+    <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-shrink-0">
+      <button id="btnToggleDrawer" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-grimoire-card border border-grimoire-border flex items-center justify-center text-grimoire-accent active:scale-95 transition-transform flex-shrink-0" title="Toutes les notes & Vault PC">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+      </button>
+      <div class="flex flex-col min-w-0">
+        <div class="flex items-center gap-1">
+          <span class="font-black text-[11px] sm:text-xs tracking-widest text-grimoire-accent">GRIMOIRE</span>
+          <span class="text-[9px] sm:text-[10px] px-1 py-0.2 rounded bg-grimoire-accent/15 text-grimoire-accent border border-grimoire-accent/30 font-semibold whitespace-nowrap">MJ GSM</span>
+        </div>
+        <span id="txtSaveStatus" class="text-[10px] sm:text-[11px] text-gray-400 flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> <span class="hidden sm:inline">Sauvegardé</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Actions Rapides Header -->
+    <div class="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+      <button onclick="openInstallModal()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-grimoire-card border border-amber-500/40 text-amber-300 text-xs sm:text-sm flex items-center justify-center active:scale-95 transition-all shadow-sm flex-shrink-0" title="Installer sur iPhone ou Android / QR Code">
+        📲
+      </button>
+      <button onclick="openGeneratorModal()" class="px-2 sm:px-2.5 py-1.5 rounded-lg bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center gap-1 active:scale-95 transition-all flex-shrink-0" title="Générateur Aléatoire">
+        <span>🎲</span> <span class="hidden md:inline">Générateur</span>
+      </button>
+      <button id="btnNewNote" class="px-2 sm:px-2.5 py-1.5 rounded-lg bg-grimoire-card border border-grimoire-border text-xs font-semibold text-gray-200 flex items-center gap-1 active:bg-grimoire-surface flex-shrink-0" title="Nouvelle Note">
+        <span>+</span> <span class="hidden sm:inline">Nouvelle</span>
+      </button>
+      <button id="btnOpenSyncModal" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs flex items-center gap-1 sm:gap-1.5 shadow-md shadow-amber-900/30 active:scale-95 transition-transform flex-shrink-0" title="Transférer vers PC">
+        <span id="headerPcDot" class="w-2 h-2 rounded-full bg-gray-500" title="Grimoire PC non connecté"></span>
+        <span>⚡</span> <span class="hidden sm:inline">Vers PC</span><span class="sm:hidden">PC</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= HORIZONTAL QUICK TOOLBAR ================= -->
+  <div class="bg-grimoire-card/90 border-b border-grimoire-border/60 px-2 sm:px-3 py-1.5 flex items-center gap-1.5 overflow-x-auto z-20 flex-shrink-0">
+    <!-- Dictée Vocale -->
+    <button id="btnVoiceRecord" class="px-2.5 sm:px-3 py-1 rounded-md bg-grimoire-surface border border-grimoire-border text-xs font-medium text-gray-200 flex items-center gap-1.5 flex-shrink-0 active:scale-95 transition-all" title="Dicter à la voix (Web Speech)">
+      <span id="micIcon" class="text-sm">🎙️</span>
+      <span id="micLabel">Dicter</span>
+    </button>
+    
+    <div class="h-4 w-px bg-grimoire-border flex-shrink-0 mx-0.5"></div>
+
+    <!-- Modèles Rapides -->
+    <button onclick="insertTemplate('scenario')" class="px-2.5 py-1 rounded-md bg-grimoire-surface/80 border border-grimoire-border text-[11px] text-gray-300 flex-shrink-0 whitespace-nowrap active:border-grimoire-accent">
+      📜 Scénario
+    </button>
+    <button onclick="insertTemplate('npc')" class="px-2.5 py-1 rounded-md bg-grimoire-surface/80 border border-grimoire-border text-[11px] text-gray-300 flex-shrink-0 whitespace-nowrap active:border-grimoire-accent">
+      👤 PNJ
+    </button>
+    <button onclick="insertTemplate('secret')" class="px-2.5 py-1 rounded-md bg-grimoire-surface/80 border border-grimoire-border text-[11px] text-gray-300 flex-shrink-0 whitespace-nowrap active:border-grimoire-accent">
+      🗝️ Secret
+    </button>
+    <button onclick="insertTemplate('loot')" class="px-2.5 py-1 rounded-md bg-grimoire-surface/80 border border-grimoire-border text-[11px] text-gray-300 flex-shrink-0 whitespace-nowrap active:border-grimoire-accent">
+      💰 Trésor
+    </button>
+
+    <div class="h-4 w-px bg-grimoire-border flex-shrink-0 mx-0.5"></div>
+
+    <!-- Outils Markdown Rapides -->
+    <button onclick="insertMarkdown('# ', '')" class="w-7 h-7 rounded bg-grimoire-surface border border-grimoire-border text-xs font-black text-grimoire-accent flex-shrink-0 active:bg-grimoire-accent/20">H1</button>
+    <button onclick="insertMarkdown('## ', '')" class="w-7 h-7 rounded bg-grimoire-surface border border-grimoire-border text-xs font-bold text-grimoire-accent flex-shrink-0 active:bg-grimoire-accent/20">H2</button>
+    <button onclick="insertMarkdown('**', '**')" class="w-7 h-7 rounded bg-grimoire-surface border border-grimoire-border text-xs font-bold text-gray-200 flex-shrink-0 active:bg-grimoire-accent/20">B</button>
+    <button onclick="insertMarkdown('- ', '')" class="w-7 h-7 rounded bg-grimoire-surface border border-grimoire-border text-xs text-gray-200 flex-shrink-0 active:bg-grimoire-accent/20">•</button>
+    <button onclick="insertMarkdown('> ', '')" class="w-7 h-7 rounded bg-grimoire-surface border border-grimoire-border text-xs text-gray-200 flex-shrink-0 active:bg-grimoire-accent/20">”</button>
+    <button onclick="rollRandomDice()" class="px-2 h-7 rounded bg-grimoire-surface border border-grimoire-border text-xs font-semibold text-amber-400 flex-shrink-0 active:bg-grimoire-accent/20">🎲 1d100</button>
+  </div>
+
+  <!-- ================= MAIN EDITOR CONTAINER ================= -->
+  <main class="flex-1 flex flex-col p-2.5 sm:p-3 overflow-y-auto overflow-x-auto min-h-[300px]">
+    <!-- Onglets Mode Édition / Mode Lecture -->
+    <div class="flex items-center justify-between mb-2 flex-shrink-0">
+      <div class="flex bg-grimoire-card rounded-lg p-0.5 border border-grimoire-border">
+        <button id="tabEdit" class="px-3 py-1 rounded-md text-xs font-semibold bg-grimoire-accent text-black transition-all">Éditer</button>
+        <button id="tabPreview" class="px-3 py-1 rounded-md text-xs font-semibold text-gray-400 transition-all">Aperçu</button>
+      </div>
+
+      <!-- Compteur de mots -->
+      <span id="txtWordCount" class="text-[11px] text-gray-500 font-mono">0 mots</span>
+    </div>
+
+    <!-- Champ Titre -->
+    <input 
+      type="text" 
+      id="inpNoteTitle" 
+      placeholder="Titre du scénario ou de la note…" 
+      class="w-full bg-grimoire-card/70 border border-grimoire-border rounded-xl px-3.5 py-2.5 text-base font-bold text-grimoire-accent placeholder-gray-500 focus:outline-none focus:border-grimoire-accent transition-colors mb-2 flex-shrink-0"
+    >
+
+    <!-- Zone d'Édition (Textarea) -->
+    <div id="editorWrap" class="flex-1 flex flex-col min-h-[180px]">
+      <textarea 
+        id="txtNoteContent" 
+        placeholder="Rédigez ou dictez vos idées de jeu de rôle ici…&#10;Markdown supporté :&#10;# Titres&#10;**Gras**, *Italique*&#10;- Listes&#10;> Citations&#10;🗝️ Secrets et intrigues"
+        class="flex-1 w-full min-h-[180px] bg-grimoire-card/50 border border-grimoire-border/80 rounded-xl p-3.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-grimoire-accent resize-none font-sans leading-relaxed overflow-y-auto"
+      ></textarea>
+    </div>
+
+    <!-- Zone d'Aperçu (Preview) -->
+    <div id="previewWrap" class="flex-1 hidden bg-grimoire-card/50 border border-grimoire-border/80 rounded-xl p-4 overflow-y-auto preview-body min-h-[180px]">
+      <!-- Rendu dynamique -->
+    </div>
+  </main>
+
+  <!-- ================= BOTTOM ACTION BAR (STICKY) ================= -->
+  <footer class="glass-header border-t border-grimoire-border px-2.5 sm:px-3 py-2 flex items-center justify-around gap-2 flex-shrink-0 z-20">
+    <!-- Télécharger .md -->
+    <button onclick="downloadMarkdown()" class="flex-1 py-2 rounded-lg bg-grimoire-card border border-grimoire-border text-[11px] sm:text-xs font-semibold text-gray-300 flex items-center justify-center gap-1 sm:gap-1.5 active:bg-grimoire-surface" title="Télécharger le fichier Markdown">
+      <svg class="w-4 h-4 text-grimoire-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+      <span class="truncate">Fichier .md</span>
+    </button>
+
+    <!-- Partager (Web Share) -->
+    <button onclick="shareNote()" class="flex-1 py-2 rounded-lg bg-grimoire-card border border-grimoire-border text-[11px] sm:text-xs font-semibold text-gray-300 flex items-center justify-center gap-1 sm:gap-1.5 active:bg-grimoire-surface" title="Partager la note">
+      <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+      <span class="truncate">Partager</span>
+    </button>
+
+    <!-- Copier texte -->
+    <button onclick="copyToClipboard()" class="flex-1 py-2 rounded-lg bg-grimoire-card border border-grimoire-border text-[11px] sm:text-xs font-semibold text-gray-300 flex items-center justify-center gap-1.5 active:bg-grimoire-surface" title="Copier le texte">
+      <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+      <span class="truncate">Copier</span>
+    </button>
+  </footer>
+
+  <!-- ================= DRAWER (GESTIONNAIRE & VAULT PC) ================= -->
+  <div id="drawerOverlay" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-40 hidden transition-opacity"></div>
+  <aside id="notesDrawer" class="fixed top-0 bottom-0 left-0 w-5/6 max-w-sm bg-grimoire-card border-r border-grimoire-border z-50 transform -translate-x-full transition-transform flex flex-col">
+    <!-- En-tête Drawer -->
+    <div class="p-3 border-b border-grimoire-border flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-base">📚</span>
+        <h3 class="text-xs font-black tracking-wider text-grimoire-accent uppercase">Explorateur de Notes</h3>
+      </div>
+      <button id="btnCloseDrawer" class="p-1 rounded-lg text-gray-400 hover:text-white">✕</button>
+    </div>
+
+    <!-- Onglets Drawer : Notes Locales vs Notes PC Grimoire -->
+    <div class="p-2 border-b border-grimoire-border/60 flex gap-1 bg-grimoire-surface/40">
+      <button id="drawerTabLocal" onclick="switchDrawerTab('local')" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-grimoire-accent text-black transition-all">
+        📱 Sur ce GSM (<span id="countLocalNotes">1</span>)
+      </button>
+      <button id="drawerTabPc" onclick="switchDrawerTab('pc')" class="flex-1 py-1.5 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all">
+        💻 Sur mon PC
+      </button>
+    </div>
+    
+    <!-- Contenu Onglet 1 : Notes Locales -->
+    <div id="drawerLocalSection" class="flex-1 flex flex-col overflow-hidden">
+      <div class="p-3 pb-2">
+        <button onclick="createNewNote(); closeDrawer();" class="w-full py-2.5 px-3 rounded-xl bg-grimoire-accent text-black font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-grimoire-accent/20 active:scale-95 transition-transform">
+          <span>+</span> <span>Nouvelle Note Nomade</span>
+        </button>
+      </div>
+      <div id="drawerNotesList" class="flex-1 overflow-y-auto px-3 pb-6 space-y-2 hide-scrollbar">
+        <!-- Rempli dynamiquement -->
+      </div>
+    </div>
+
+    <!-- Contenu Onglet 2 : Notes PC Grimoire (Vault Bidirectionnel) -->
+    <div id="drawerPcSection" class="flex-1 flex flex-col overflow-hidden hidden">
+      <div class="p-3 pb-2 flex flex-col gap-2">
+        <div class="flex items-center gap-1.5">
+          <input 
+            type="text" 
+            id="inpSearchPcVault" 
+            placeholder="Rechercher sur le PC…" 
+            class="flex-1 bg-grimoire-surface border border-grimoire-border rounded-lg px-2.5 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-grimoire-accent"
+            oninput="filterPcVaultNotes()"
+          >
+          <button onclick="fetchPcVaultNotes()" class="p-2 rounded-lg bg-grimoire-surface border border-grimoire-border text-xs text-grimoire-accent active:scale-95" title="Actualiser la liste PC">
+            🔄
+          </button>
+        </div>
+        <p class="text-[10px] text-gray-400">
+          Touchez une note du PC pour la télécharger et la modifier directement sur votre GSM.
+        </p>
+      </div>
+
+      <div id="drawerPcVaultList" class="flex-1 overflow-y-auto px-3 pb-6 space-y-2 hide-scrollbar">
+        <div class="text-center py-8 text-gray-500 text-xs">
+          <span class="text-2xl block mb-2">📡</span>
+          Appuyez sur <strong>🔄</strong> pour explorer les notes de votre Vault PC.
+        </div>
+      </div>
+    </div>
+
+    <div class="p-2.5 border-t border-grimoire-border/80 text-[10px] text-gray-500 text-center bg-black/30">
+      Grimoire TTRPG Suite © LordMadTrix — Synchro v2
+    </div>
+  </aside>
+
+  <!-- ================= MODAL INSTALLATION GSM / QR CODE ================= -->
+  <div id="installModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-auto">
+    <div class="bg-grimoire-card border border-grimoire-border rounded-2xl w-full max-w-sm p-4 sm:p-5 shadow-2xl flex flex-col gap-4 text-center my-auto max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-grimoire-border/60 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📱</span>
+          <h3 class="font-bold text-sm text-white">Installer sur Mobile (PWA)</h3>
+        </div>
+        <button onclick="closeInstallModal()" class="text-gray-400 hover:text-white text-lg font-bold">✕</button>
+      </div>
+
+      <!-- Vignette QR Code -->
+      <div class="p-3 bg-white rounded-2xl border-2 border-amber-400 shadow-xl shadow-amber-900/30 mx-auto w-fit">
+        <img src="qr-carnet-mj.svg" alt="QR Code Carnet MJ" class="w-44 h-44 sm:w-48 sm:h-48 object-contain">
+      </div>
+
+      <p class="text-xs text-gray-300">
+        Flashez ce code avec l'appareil photo de votre smartphone pour ouvrir l'application.
+      </p>
+
+      <div class="text-left space-y-2.5 bg-grimoire-surface/60 border border-grimoire-border/80 rounded-xl p-3 text-[11px] text-gray-300">
+        <div class="flex items-start gap-2">
+          <span class="text-sm">🍏</span>
+          <div>
+            <strong class="text-white block">iPhone (Safari) :</strong>
+            Touchez <strong>Partager</strong> <span class="text-gray-400">(carré avec flèche)</span> puis <strong>« Sur l'écran d'accueil »</strong>.
+          </div>
+        </div>
+        <div class="flex items-start gap-2 pt-1 border-t border-grimoire-border/40">
+          <span class="text-sm">🤖</span>
+          <div>
+            <strong class="text-white block">Android (Chrome) :</strong>
+            Touchez le menu <strong>⋮</strong> puis <strong>« Installer l'application »</strong>.
+          </div>
+        </div>
+      </div>
+
+      <button onclick="copyAppUrl()" class="w-full py-2 rounded-xl bg-grimoire-surface border border-grimoire-border text-xs font-semibold text-gray-200 hover:border-grimoire-accent active:scale-95">
+        📋 Copier le lien de l'application
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL GENERATEUR ALEATOIRE NOMADE ================= -->
+  <div id="genModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-auto">
+    <div class="bg-grimoire-card border border-grimoire-border rounded-2xl w-full max-w-md p-4 shadow-2xl flex flex-col max-h-[92vh] overflow-y-auto my-auto">
+      <!-- Header Générateur -->
+      <div class="flex items-center justify-between border-b border-grimoire-border/60 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🎲</span>
+          <h3 class="font-bold text-sm text-white">Générateur Aléatoire Nomade</h3>
+        </div>
+        <button onclick="closeGeneratorModal()" class="text-gray-400 hover:text-white text-lg font-bold">✕</button>
+      </div>
+
+      <!-- Onglets Catégories du Générateur -->
+      <div class="grid grid-cols-4 gap-1 pt-3 pb-2">
+        <button id="genTabNpc" onclick="switchGenCategory('npc')" class="py-1.5 text-[11px] font-bold rounded-lg bg-grimoire-accent text-black transition-all">
+          👤 PNJ
+        </button>
+        <button id="genTabPlace" onclick="switchGenCategory('place')" class="py-1.5 text-[11px] font-bold rounded-lg text-gray-400 hover:text-white transition-all">
+          🏰 Lieu
+        </button>
+        <button id="genTabRumor" onclick="switchGenCategory('rumor')" class="py-1.5 text-[11px] font-bold rounded-lg text-gray-400 hover:text-white transition-all">
+          👂 Rumeur
+        </button>
+        <button id="genTabLoot" onclick="switchGenCategory('loot')" class="py-1.5 text-[11px] font-bold rounded-lg text-gray-400 hover:text-white transition-all">
+          💰 Trésor
+        </button>
+      </div>
+
+      <!-- Zone Résultat Généré -->
+      <div class="flex-1 overflow-y-auto my-2 p-3 bg-grimoire-surface/60 border border-grimoire-border rounded-xl min-h-[140px] flex flex-col justify-center">
+        <div id="genResultBox" class="text-xs text-gray-200 leading-relaxed space-y-1.5">
+          <!-- Rempli dynamiquement -->
+        </div>
+      </div>
+
+      <!-- Actions Générateur -->
+      <div class="flex items-center gap-2 pt-2 border-t border-grimoire-border/60">
+        <button onclick="rollRandomGeneration()" class="flex-1 py-2.5 rounded-xl bg-grimoire-surface border border-grimoire-border text-xs font-bold text-amber-400 flex items-center justify-center gap-1.5 active:scale-95 transition-transform">
+          <span>🎲</span> <span>Relancer</span>
+        </button>
+        <button onclick="insertGenResultIntoNote()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-amber-900/30 active:scale-95 transition-transform">
+          <span>📥</span> <span>Insérer dans la note</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL SYNCHRONISATION PC ================= -->
+  <div id="syncModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-auto">
+    <div class="bg-grimoire-card border border-grimoire-border rounded-2xl w-full max-w-md p-4 sm:p-5 shadow-2xl flex flex-col gap-4 my-auto max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-grimoire-border/60 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">⚡</span>
+          <h3 class="font-bold text-sm text-white">Transférer vers Grimoire PC</h3>
+        </div>
+        <button onclick="closeSyncModal()" class="text-gray-400 hover:text-white text-lg font-bold">✕</button>
+      </div>
+
+      <!-- Statut de connexion automatique PC -->
+      <div id="pcConnStatus" class="p-2.5 rounded-xl border flex items-center justify-between gap-2 text-xs transition-all bg-grimoire-surface/70 border-grimoire-border">
+        <div class="flex items-center gap-2 min-w-0">
+          <span id="pcConnDot" class="w-2.5 h-2.5 rounded-full bg-gray-500 flex-shrink-0"></span>
+          <span id="pcConnText" class="text-gray-300 truncate text-[11px]">Vérification de Grimoire PC…</span>
+        </div>
+        <button id="btnAutoScan" onclick="detectGrimoireServer(true)" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-bold hover:bg-amber-500/30 active:scale-95 transition-all flex-shrink-0 flex items-center gap-1" title="Détecter automatiquement sur le Wi-Fi local">
+          <span>🔍</span> <span>Détecter</span>
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-300 leading-relaxed">
+        Envoyez instantanément cette note dans votre Vault Grimoire PC (dans le dossier <code class="text-grimoire-accent">Notes/Mobile/</code>).
+      </p>
+
+      <div class="space-y-3">
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-[11px] font-semibold text-gray-400">ADRESSE IP & PORT DU PC GRIMOIRE</label>
+            <span id="txtAutoDetectedBadge" class="hidden text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">Auto-détecté ✨</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <input 
+              type="text" 
+              id="inpServerUrl" 
+              placeholder="ex: http://192.168.1.50:7438" 
+              class="flex-1 bg-grimoire-surface border border-grimoire-border rounded-xl px-3 py-2 text-xs text-white font-mono placeholder-gray-500 focus:outline-none focus:border-grimoire-accent"
+              onchange="localStorage.setItem(SERVER_KEY, this.value); checkServerAlive(this.value);"
+            >
+          </div>
+          <span class="text-[10px] text-gray-500 mt-1 block">Détecté automatiquement sur le même réseau Wi-Fi ou saisie manuelle.</span>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-gray-400 mb-1">DOSSIER CIBLE DANS LE VAULT</label>
+          <select id="selTargetFolder" class="w-full bg-grimoire-surface border border-grimoire-border rounded-xl px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-grimoire-accent">
+            <option value="Notes/Mobile">Notes/Mobile (Recommandé)</option>
+            <option value="Scénarios">Scénarios</option>
+            <option value="PNJ">PNJ</option>
+            <option value="Journal">Journal</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Statut de transfert -->
+      <div id="syncFeedback" class="hidden text-xs rounded-xl p-3"></div>
+
+      <!-- Boutons d'envoi -->
+      <div class="flex flex-col gap-2 pt-2">
+        <button id="btnSendToPc" onclick="sendNoteToGrimoirePC()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-900/30 active:scale-95 transition-transform">
+          <span>🚀 Transférer cette note</span>
+        </button>
+        <button id="btnSendAllToPc" onclick="sendAllNotesToGrimoirePC()" class="w-full py-2 rounded-xl bg-grimoire-surface border border-grimoire-border text-xs font-semibold text-gray-200 hover:border-grimoire-accent flex items-center justify-center gap-2 active:scale-95">
+          <span>📦 Tout synchroniser (<span id="txtCountAllNotes">1</span> notes vers PC)</span>
+        </button>
+        <button onclick="closeSyncModal()" class="w-full py-1.5 text-[11px] text-gray-400 hover:text-white">
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOAST NOTIFICATION ================= -->
+  <div id="toast" class="fixed bottom-16 left-1/2 -translate-x-1/2 bg-grimoire-surface border border-grimoire-accent/40 text-gray-100 text-xs font-medium px-4 py-2.5 rounded-xl shadow-2xl z-50 pointer-events-none opacity-0 transition-opacity duration-300 flex items-center gap-2">
+    <span id="toastIcon">✨</span>
+    <span id="toastMsg">Action effectuée</span>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // --- VIBRATION HAPTIQUE ---
+    function triggerHaptic(pattern = [25]) {
+      if ('vibrate' in navigator) {
+        try { navigator.vibrate(pattern); } catch(e) {}
+      }
+    }
+
+    // --- GESTION DU STOCKAGE LOCAL DES NOTES ---
+    const STORAGE_KEY = 'grimoire_mj_notes_v1';
+    const ACTIVE_KEY = 'grimoire_mj_active_id';
+    const SERVER_KEY = 'grimoire_mj_server_url';
+
+    let notes = [];
+    let activeNoteId = null;
+    let autoSaveTimer = null;
+    let recognition = null;
+    let isRecording = false;
+
+    // Cache pour les notes du PC
+    let pcVaultNotesCache = [];
+
+    // Éléments DOM
+    const inpTitle = document.getElementById('inpNoteTitle');
+    const txtContent = document.getElementById('txtNoteContent');
+    const txtStatus = document.getElementById('txtSaveStatus');
+    const txtWordCount = document.getElementById('txtWordCount');
+    const tabEdit = document.getElementById('tabEdit');
+    const tabPreview = document.getElementById('tabPreview');
+    const editorWrap = document.getElementById('editorWrap');
+    const previewWrap = document.getElementById('previewWrap');
+    const drawer = document.getElementById('notesDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const drawerNotesList = document.getElementById('drawerNotesList');
+    const countLocalNotes = document.getElementById('countLocalNotes');
+    const syncModal = document.getElementById('syncModal');
+    const inpServerUrl = document.getElementById('inpServerUrl');
+    const selTargetFolder = document.getElementById('selTargetFolder');
+    const syncFeedback = document.getElementById('syncFeedback');
+    const btnSendToPc = document.getElementById('btnSendToPc');
+
+    // Initialisation
+    function init() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        notes = raw ? JSON.parse(raw) : [];
+      } catch(e) { notes = []; }
+
+      if (notes.length === 0) {
+        notes.push({
+          id: 'note_' + Date.now(),
+          title: 'Idées de Campagne & PNJ',
+          content: `# Session 1 : L'Auberge du Gobelin Boiteux
+
+## 👥 PNJ Présents
+- **Gundren** : Nain marchand, pressé et mystérieux.
+- **Sildar** : Guerrier vétéran de la garde, loyal.
+
+## 🗝️ Secrets & Rumeurs
+> [!SECRET]
+> Une bande de brigands attend le convoi au défilé des pierres grises.
+
+## 💰 Trésor
+- Bourse de 45 couronnes impériales
+- Clé rouillée portant le sceau d'une guilde inconnue`,
+          updatedAt: Date.now()
+        });
+      }
+
+      const savedActive = localStorage.getItem(ACTIVE_KEY);
+      if (savedActive && notes.some(n => n.id === savedActive)) {
+        activeNoteId = savedActive;
+      } else {
+        activeNoteId = notes[0].id;
+      }
+
+      // Détection de paramètre URL (?server= ou ?pc=)
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramServer = urlParams.get('server') || urlParams.get('pc');
+      if (paramServer) {
+        inpServerUrl.value = paramServer;
+        localStorage.setItem(SERVER_KEY, paramServer);
+      } else {
+        const savedServer = localStorage.getItem(SERVER_KEY);
+        if (savedServer) {
+          inpServerUrl.value = savedServer;
+        } else if (!window.location.hostname.includes('github.io') && (window.location.port === '7438' || window.location.pathname.includes('/mj') || window.location.pathname.includes('/carnet'))) {
+          inpServerUrl.value = window.location.origin;
+        } else {
+          inpServerUrl.value = '';
+        }
+      }
+
+      loadActiveNote();
+
+      inpTitle.addEventListener('input', triggerAutoSave);
+      txtContent.addEventListener('input', triggerAutoSave);
+
+      document.getElementById('btnToggleDrawer').addEventListener('click', openDrawer);
+      document.getElementById('btnCloseDrawer').addEventListener('click', closeDrawer);
+      drawerOverlay.addEventListener('click', closeDrawer);
+      document.getElementById('btnNewNote').addEventListener('click', createNewNote);
+      document.getElementById('btnOpenSyncModal').addEventListener('click', openSyncModal);
+
+      tabEdit.addEventListener('click', () => switchTab('edit'));
+      tabPreview.addEventListener('click', () => switchTab('preview'));
+
+      initSpeechRecognition();
+
+      // Détection automatique discrète en arrière-plan
+      setTimeout(() => detectGrimoireServer(false), 800);
+    }
+
+    function loadActiveNote() {
+      const note = notes.find(n => n.id === activeNoteId) || notes[0];
+      if (!note) return;
+      activeNoteId = note.id;
+      localStorage.setItem(ACTIVE_KEY, activeNoteId);
+
+      inpTitle.value = note.title;
+      txtContent.value = note.content;
+      updateWordCount();
+      renderPreview();
+    }
+
+    function triggerAutoSave() {
+      txtStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Enregistrement…';
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(() => {
+        saveCurrentNote();
+        txtStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Sauvegardé';
+      }, 400);
+      updateWordCount();
+    }
+
+    function saveCurrentNote() {
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note) return;
+      note.title = inpTitle.value.trim() || 'Note sans titre';
+      note.content = txtContent.value;
+      note.updatedAt = Date.now();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    }
+
+    function updateWordCount() {
+      const text = txtContent.value.trim();
+      const words = text ? text.split(/\s+/).length : 0;
+      txtWordCount.textContent = `${words} mot${words > 1 ? 's' : ''}`;
+    }
+
+    function switchTab(mode) {
+      triggerHaptic([15]);
+      if (mode === 'edit') {
+        tabEdit.classList.add('bg-grimoire-accent', 'text-black');
+        tabEdit.classList.remove('text-gray-400');
+        tabPreview.classList.remove('bg-grimoire-accent', 'text-black');
+        tabPreview.classList.add('text-gray-400');
+        editorWrap.classList.remove('hidden');
+        previewWrap.classList.add('hidden');
+      } else {
+        saveCurrentNote();
+        renderPreview();
+        tabPreview.classList.add('bg-grimoire-accent', 'text-black');
+        tabPreview.classList.remove('text-gray-400');
+        tabEdit.classList.remove('bg-grimoire-accent', 'text-black');
+        tabEdit.classList.add('text-gray-400');
+        editorWrap.classList.add('hidden');
+        previewWrap.classList.remove('hidden');
+      }
+    }
+
+    function renderPreview() {
+      const raw = txtContent.value;
+      let html = raw
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+        .replace(/^> \[!SECRET\]\n([\s\S]*?)(?=\n\n|$)/gim, '<div class="secret-box"><div class="secret-title">🗝️ Secret MJ</div>$1</div>')
+        .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
+        .replace(/^- (.*$)/gim, '<ul><li>$1</li></ul>')
+        .replace(/`([^`]+)`/gim, '<code>$1</code>')
+        .replace(/\n$/gim, '<br />');
+
+      html = html.replace(/<\/ul>\s?<ul>/gim, '');
+      previewWrap.innerHTML = html || '<p class="text-gray-500 italic">Note vide…</p>';
+    }
+
+    // --- DICTÉE VOCALE (WEB SPEECH API) ---
+    function initSpeechRecognition() {
+      const btn = document.getElementById('btnVoiceRecord');
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      
+      if (!SpeechRecognition) {
+        btn.onclick = () => showToast('⚠️ La dictée vocale native nécessite Chrome ou Safari mobile.', '⚠️');
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = 'fr-FR';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      recognition.onstart = () => {
+        isRecording = true;
+        triggerHaptic([30, 40]);
+        btn.classList.add('recording-active');
+        document.getElementById('micLabel').textContent = 'Écoute…';
+        showToast('🎙️ Dictée active : parlez naturellement', '🎙️');
+      };
+
+      recognition.onresult = (event) => {
+        let interim = '';
+        let finalTrans = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTrans += event.results[i][0].transcript + ' ';
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+
+        if (finalTrans) {
+          const cur = txtContent.value;
+          const cursorPos = txtContent.selectionStart;
+          const before = cur.substring(0, cursorPos);
+          const after = cur.substring(cursorPos);
+          txtContent.value = before + finalTrans + after;
+          txtContent.selectionStart = txtContent.selectionEnd = cursorPos + finalTrans.length;
+          triggerAutoSave();
+        }
+      };
+
+      recognition.onerror = (e) => {
+        console.error('Speech error:', e);
+        stopRecording();
+      };
+
+      recognition.onend = () => {
+        stopRecording();
+      };
+
+      btn.addEventListener('click', () => {
+        if (!isRecording) {
+          try { recognition.start(); } catch(e) { stopRecording(); }
+        } else {
+          try { recognition.stop(); } catch(e) {}
+          stopRecording();
+        }
+      });
+    }
+
+    function stopRecording() {
+      isRecording = false;
+      const btn = document.getElementById('btnVoiceRecord');
+      btn.classList.remove('recording-active');
+      document.getElementById('micLabel').textContent = 'Dicter';
+    }
+
+    // --- INSERTION D'OUTILS ET TEMPLATES ---
+    function insertMarkdown(prefix, suffix) {
+      triggerHaptic([20]);
+      const el = txtContent;
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+      const text = el.value;
+      const sel = text.substring(start, end);
+      el.value = text.substring(0, start) + prefix + sel + suffix + text.substring(end);
+      el.focus();
+      el.selectionStart = el.selectionEnd = start + prefix.length + sel.length;
+      triggerAutoSave();
+    }
+
+    function insertTemplate(type) {
+      triggerHaptic([30]);
+      let tpl = '';
+      if (type === 'scenario') {
+        tpl = `\n\n## ⚔️ Scène : [Nom de la Scène]
+- **Lieu** : 
+- **Objectif** : 
+- **Ambiance** : 
+- **Événement Déclencheur** : 
+`;
+      } else if (type === 'npc') {
+        tpl = `\n\n### 👤 PNJ : [Nom & Titre]
+- **Rôle** : 
+- **Apparence** : 
+- **Motivation** : 
+- **Secret inavouable** : 
+`;
+      } else if (type === 'secret') {
+        tpl = `\n\n> [!SECRET]
+> **Révélation** : [Ce que le MJ sait mais que les PJ ignorent encore]\n`;
+      } else if (type === 'loot') {
+        tpl = `\n\n### 💰 Butin & Objets Trouvés
+- **Monnaies** : 
+- **Objet magique / Relique** : 
+- **Indice / Lettre** : \n`;
+      }
+
+      insertMarkdown('', tpl);
+      showToast('Template inséré !', '✨');
+    }
+
+    function rollRandomDice() {
+      triggerHaptic([20, 30]);
+      const roll = Math.floor(Math.random() * 100) + 1;
+      insertMarkdown(`\n*(🎲 Jet de Dé d100 : **${roll}**)*\n`, '');
+      showToast(`Résultat dé : ${roll}`, '🎲');
+    }
+
+    // --- GESTIONNAIRE DE NOTES (DRAWER) & VAULT PC ---
+    function openDrawer() {
+      triggerHaptic([20]);
+      renderDrawerNotes();
+      drawer.classList.remove('-translate-x-full');
+      drawerOverlay.classList.remove('hidden');
+    }
+
+    function closeDrawer() {
+      drawer.classList.add('-translate-x-full');
+      drawerOverlay.classList.add('hidden');
+    }
+
+    function switchDrawerTab(tab) {
+      triggerHaptic([15]);
+      const tabLocal = document.getElementById('drawerTabLocal');
+      const tabPc = document.getElementById('drawerTabPc');
+      const secLocal = document.getElementById('drawerLocalSection');
+      const secPc = document.getElementById('drawerPcSection');
+
+      if (tab === 'local') {
+        tabLocal.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg bg-grimoire-accent text-black transition-all';
+        tabPc.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all';
+        secLocal.classList.remove('hidden');
+        secPc.classList.add('hidden');
+      } else {
+        tabPc.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg bg-grimoire-accent text-black transition-all';
+        tabLocal.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all';
+        secPc.classList.remove('hidden');
+        secLocal.classList.add('hidden');
+        // Si vide, lancer la récupération automatique
+        if (pcVaultNotesCache.length === 0) {
+          fetchPcVaultNotes();
+        }
+      }
+    }
+
+    function renderDrawerNotes() {
+      drawerNotesList.innerHTML = '';
+      countLocalNotes.textContent = notes.length;
+      notes.sort((a, b) => b.updatedAt - a.updatedAt).forEach(n => {
+        const isCur = n.id === activeNoteId;
+        const item = document.createElement('div');
+        item.className = `p-3 rounded-xl border flex items-center justify-between gap-2 transition-all ${
+          isCur ? 'bg-grimoire-accent/15 border-grimoire-accent text-white' : 'bg-grimoire-surface/60 border-grimoire-border text-gray-300'
+        }`;
+        
+        const dateStr = new Date(n.updatedAt).toLocaleDateString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+        item.innerHTML = `
+          <div class="flex-1 min-w-0 cursor-pointer" onclick="selectNote('${n.id}')">
+            <h4 class="text-xs font-bold truncate ${isCur ? 'text-grimoire-accent' : 'text-gray-200'}">${escapeHtml(n.title)}</h4>
+            <span class="text-[10px] text-gray-400 font-mono">${dateStr}</span>
+          </div>
+          ${notes.length > 1 ? `
+            <button onclick="deleteNote('${n.id}', event)" class="p-1.5 text-gray-400 hover:text-red-400 active:scale-95" title="Supprimer">
+              🗑️
+            </button>
+          ` : ''}
+        `;
+        drawerNotesList.appendChild(item);
+      });
+    }
+
+    function selectNote(id) {
+      triggerHaptic([20]);
+      saveCurrentNote();
+      activeNoteId = id;
+      loadActiveNote();
+      closeDrawer();
+    }
+
+    function createNewNote() {
+      triggerHaptic([30]);
+      saveCurrentNote();
+      const newNote = {
+        id: 'note_' + Date.now(),
+        title: 'Nouvelle Note MJ',
+        content: '# Nouvelle Note\n\n',
+        updatedAt: Date.now()
+      };
+      notes.unshift(newNote);
+      activeNoteId = newNote.id;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+      loadActiveNote();
+      inpTitle.focus();
+      showToast('Nouvelle note créée', '📝');
+    }
+
+    function deleteNote(id, event) {
+      event.stopPropagation();
+      triggerHaptic([40]);
+      if (!confirm('Supprimer cette note définitivement du GSM ?')) return;
+      notes = notes.filter(n => n.id !== id);
+      if (activeNoteId === id) {
+        activeNoteId = notes[0]?.id || null;
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+      if (!activeNoteId) {
+        createNewNote();
+      } else {
+        loadActiveNote();
+      }
+      renderDrawerNotes();
+      showToast('Note supprimée', '🗑️');
+    }
+
+    // --- SYNCHRONISATION BIDIRECTIONNELLE : EXPLORATEUR PC ---
+    async function fetchPcVaultNotes() {
+      triggerHaptic([20]);
+      const listContainer = document.getElementById('drawerPcVaultList');
+      const serverUrl = (inpServerUrl.value || '').trim().replace(/\/+$/, '');
+      if (!serverUrl) {
+        listContainer.innerHTML = '<div class="p-3 text-xs text-amber-400">Renseignez l\'URL du PC dans l\'onglet "Vers PC".</div>';
+        return;
+      }
+
+      listContainer.innerHTML = '<div class="text-center py-6 text-xs text-gray-400 animate-pulse">📡 Connexion au Vault Grimoire PC…</div>';
+
+      try {
+        const res = await fetch(`${serverUrl}/api/mj/vault_notes`);
+        if (!res.ok) throw new Error(`Code erreur HTTP: ${res.status}`);
+        const data = await res.json();
+        pcVaultNotesCache = data.notes || [];
+
+        if (pcVaultNotesCache.length === 0) {
+          listContainer.innerHTML = '<div class="text-center py-6 text-xs text-gray-500">Aucune note Markdown trouvée dans le Vault PC.</div>';
+          return;
+        }
+
+        renderPcVaultList(pcVaultNotesCache);
+        showToast(`${pcVaultNotesCache.length} notes PC trouvées`, '💻');
+      } catch (err) {
+        listContainer.innerHTML = `
+          <div class="p-3 rounded-xl bg-red-900/30 border border-red-500/50 text-xs text-red-200">
+            ❌ <strong>Échec de connexion :</strong><br/>
+            Impossible de joindre le PC (${escapeHtml(serverUrl)}).<br/>
+            Vérifiez que Grimoire PC est ouvert avec le serveur mobile activé.
+          </div>
+        `;
+      }
+    }
+
+    function filterPcVaultNotes() {
+      const q = (document.getElementById('inpSearchPcVault').value || '').toLowerCase().trim();
+      if (!q) {
+        renderPcVaultList(pcVaultNotesCache);
+      } else {
+        const filtered = pcVaultNotesCache.filter(n => 
+          (n.title && n.title.toLowerCase().includes(q)) || 
+          (n.path && n.path.toLowerCase().includes(q)) ||
+          (n.snippet && n.snippet.toLowerCase().includes(q))
+        );
+        renderPcVaultList(filtered);
+      }
+    }
+
+    function renderPcVaultList(items) {
+      const listContainer = document.getElementById('drawerPcVaultList');
+      listContainer.innerHTML = '';
+
+      if (items.length === 0) {
+        listContainer.innerHTML = '<div class="text-center py-4 text-xs text-gray-500">Aucun résultat.</div>';
+        return;
+      }
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'p-3 rounded-xl bg-grimoire-surface/80 border border-grimoire-border hover:border-grimoire-accent transition-colors flex flex-col gap-1.5 cursor-pointer active:scale-[0.98]';
+        
+        const dateStr = item.updated ? new Date(item.updated).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+        const sizeKb = item.size ? `${(item.size / 1024).toFixed(1)} Ko` : '';
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <h4 class="text-xs font-bold text-grimoire-accent truncate">${escapeHtml(item.title || item.path)}</h4>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-black/40 text-gray-400 font-mono flex-shrink-0">PC</span>
+          </div>
+          <p class="text-[11px] text-gray-400 font-mono truncate">${escapeHtml(item.path)}</p>
+          ${item.snippet ? `<p class="text-[11px] text-gray-300 line-clamp-2 italic">${escapeHtml(item.snippet)}</p>` : ''}
+          <div class="flex items-center justify-between text-[10px] text-gray-500 pt-1 border-t border-grimoire-border/50">
+            <span>${dateStr}</span>
+            <span>${sizeKb}</span>
+          </div>
+        `;
+
+        card.onclick = () => downloadNoteFromPC(item.path, item.title);
+        listContainer.appendChild(card);
+      });
+    }
+
+    async function downloadNoteFromPC(relPath, fallbackTitle) {
+      triggerHaptic([30]);
+      if (!confirm(`Télécharger et ouvrir "${fallbackTitle || relPath}" sur votre GSM ?`)) return;
+
+      const serverUrl = (inpServerUrl.value || '').trim().replace(/\/+$/, '');
+      try {
+        const res = await fetch(`${serverUrl}/api/mj/read_note?path=${encodeURIComponent(relPath)}`);
+        const data = await res.json();
+        if (data.success && data.content !== undefined) {
+          saveCurrentNote();
+
+          // Chercher si la note existe déjà localement
+          let existing = notes.find(n => n.title === data.title || n.pcPath === relPath);
+          let targetNote = existing;
+
+          if (existing && existing.content && existing.content.trim() !== data.content.trim()) {
+            const createCopy = confirm(
+              `⚠️ Attention : Une version modifiée de "${existing.title}" existe déjà sur votre mobile !\n\n` +
+              `• Cliquez sur [OK] pour CONSERVER vos modifications mobiles et importer le PC dans une nouvelle copie "${data.title} (PC)" (Recommandé).\n` +
+              `• Cliquez sur [Annuler] pour remplacer la version mobile par celle du PC.`
+            );
+            if (createCopy) {
+              targetNote = null;
+            } else {
+              const confirmOverwrite = confirm(
+                `🚨 Confirmation requise :\nÊtes-vous certain de vouloir ÉCRASER définitivement votre texte mobile par la version du PC ?`
+              );
+              if (!confirmOverwrite) {
+                showToast('Importation annulée pour protéger vos notes', '🛡️');
+                return;
+              }
+            }
+          }
+
+          if (targetNote) {
+            targetNote.content = data.content;
+            targetNote.title = data.title;
+            targetNote.pcPath = relPath;
+            targetNote.updatedAt = Date.now();
+            activeNoteId = targetNote.id;
+          } else {
+            const isCopy = existing ? true : false;
+            const newTitle = isCopy ? `${data.title || fallbackTitle || 'Note PC'} (PC)` : (data.title || fallbackTitle || 'Note PC');
+            const newNote = {
+              id: 'note_' + Date.now(),
+              title: newTitle,
+              content: data.content,
+              pcPath: isCopy ? undefined : relPath,
+              updatedAt: Date.now()
+            };
+            notes.unshift(newNote);
+            activeNoteId = newNote.id;
+          }
+
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+          loadActiveNote();
+          closeDrawer();
+          showToast(`Note PC "${data.title}" chargée sur le mobile !`, '📥');
+          triggerHaptic([20, 50]);
+        } else {
+          alert('Impossible de lire la note sur le PC : ' + (data.error || 'Erreur inconnue'));
+        }
+      } catch (err) {
+        alert('Erreur réseau lors de la récupération de la note PC : ' + err.message);
+      }
+    }
+
+    // --- GÉNÉRATEUR ALÉATOIRE NOMADE ---
+    const GEN_DATA = {
+      firstnames: ['Alden', 'Valéria', 'Grimli', 'Sylas', 'Elion', 'Maelis', 'Dame Vivienne', 'Boran', 'Kaelen', 'Thalor', 'Morrigan', 'Zephyr', 'Isolde', 'Garrick', 'Vespera', 'Darian'],
+      lastnames: ['Vance', 'Noiresang', 'Poing-de-Fer', 'Sombrelune', 'Vent-d\'Hiver', 'Feu-d\'Épine', 'Rochedragon', 'Marche-Ombre', 'Couronne-d\'Or', 'Brise-Chaîne', 'des Cendres', 'Mortepierre'],
+      races: ['Humain(e)', 'Elfe sylvain', 'Nain(e) des collines', 'Demi-orc', 'Tieffelin(e)', 'Drakéide', 'Halfelin(e)', 'Gnome des forêts', 'Aasimar'],
+      roles: [
+        'Aubergiste jovial mais calculateur',
+        'Apothicaire herboriste soupçonneux',
+        'Capitaine de la garde corrompu',
+        'Barde ambulant et espion discret',
+        'Érudit ermite obsédé par les astres',
+        'Forgeron d\'armes runiques',
+        'Mercenaire taciturne en quête de rachat',
+        'Contrebandier des souterrains',
+        'Prêtre déchu d\'une divinité oubliée',
+        'Chasseur de primes impassible'
+      ],
+      traits: [
+        'Méfiance instinctive envers les étrangers',
+        'Rire tonitruant et gestes amples',
+        'Parle à voix basse en surveillant chaque ombre',
+        'Regard perçant et glacial, ne sourit jamais',
+        'Geste nerveux avec une pièce en argent',
+        'Maniaque de l\'ordre et de la propreté',
+        'Curiosité débordante pour la magie arcanique',
+        'Ponctue ses phrases de proverbes maritimes'
+      ],
+      secrets: [
+        'Détient la moitié d\'une carte au trésor cryptée',
+        'A empoisonné son rival pour obtenir sa position',
+        'A contracté une dette colossale envers la guilde des voleurs',
+        'Cache un proche infecté par la lycanthropie',
+        'Est en réalité un agent double au service de la faction adverse',
+        'Garde une relique maudite dissimulée sous son plancher'
+      ],
+      places: [
+        'L\'Auberge du Sanglier Borgne',
+        'Le Pont du Gouffre Sans Fond',
+        'La Tour de Guet Oubliée des Rois',
+        'Les Catacombes des Pénitents',
+        'Le Sanctuaire des Murmures Sylvestres',
+        'Le Bastion de la Flamme Noire',
+        'La Clairière du Menhir Brisée',
+        'Les Bas-Fonds de la Cité Haute',
+        'Le Moulin Hanté des Marais'
+      ],
+      ambiances: [
+        'Odeur âcre de suie, crépitement de torches vacillantes et murmures feutrés.',
+        'Brume glaciale rampant au sol, silence lourd interrompu par des gouttes d\'eau régulières.',
+        'Vent violent sifflant à travers les meurtrières, odeur de pluie et d\'ozone.',
+        'Parfum envoûtant d\'encens ancien masquant une odeur de moisissure souterraine.',
+        'Chaleur étouffante, odeur de fer chauffé à blanc et grondements lointains.'
+      ],
+      rumors: [
+        'Une étrange créature ailée a été vue rôdant au-dessus des collines chaque nuit de lune noire.',
+        'Le seigneur local a doublé la garnison après avoir reçu une mystérieuse missive scellée de cire rouge.',
+        'La vieille mine abandonnée produit à nouveau d\'inquiétants bruits métalliques rythmés.',
+        'Des voyageurs ont disparu sur la route du nord sans laisser la moindre trace de caravane.',
+        'Une relique volée au temple réapparaîtrait lors d\'une vente aux enchères clandestine ce soir.',
+        'L\'eau du puits central a pris un goût métallique et certains villageois font les mêmes cauchemars.'
+      ],
+      loots: [
+        'Bourse en cuir contenant 35 couronnes d\'or et un rubis étoilé de 50 po.',
+        'Amulette d\'œil de faucon conférant un bonus aux tests de perception.',
+        'Dague cérémonielle en obsidienne dont la lame ne retient jamais le sang.',
+        'Flacon d\'élixir de vif-argent pulsant d\'une douce lueur azurée.',
+        'Parchemin jauni scellé contenant une promesse de dette signée par un noble.',
+        'Anneau en argent ciselé gravé d\'un mot de passe secret dans une langue morte.',
+        'Fiole de poison d\'araignée spectrale à effet paralysant immédiat.'
+      ]
+    };
+
+    let activeGenCategory = 'npc';
+    let currentGenMarkdown = '';
+
+    // --- MODAL INSTALLATION & QR CODE ---
+    function openInstallModal() {
+      triggerHaptic([20]);
+      document.getElementById('installModal').classList.remove('hidden');
+    }
+
+    function closeInstallModal() {
+      document.getElementById('installModal').classList.add('hidden');
+    }
+
+    function copyAppUrl() {
+      triggerHaptic([25]);
+      const url = window.location.href.split('#')[0].split('?')[0];
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Lien de l\'application copié !', '📋');
+      }).catch(() => {
+        showToast('Erreur lors de la copie', '⚠️');
+      });
+    }
+
+    function openGeneratorModal() {
+      triggerHaptic([20]);
+      document.getElementById('genModal').classList.remove('hidden');
+      rollRandomGeneration();
+    }
+
+    function closeGeneratorModal() {
+      document.getElementById('genModal').classList.add('hidden');
+    }
+
+    function switchGenCategory(cat) {
+      triggerHaptic([15]);
+      activeGenCategory = cat;
+      const tabs = {
+        npc: document.getElementById('genTabNpc'),
+        place: document.getElementById('genTabPlace'),
+        rumor: document.getElementById('genTabRumor'),
+        loot: document.getElementById('genTabLoot')
+      };
+
+      Object.keys(tabs).forEach(k => {
+        if (k === cat) {
+          tabs[k].className = 'py-1.5 text-[11px] font-bold rounded-lg bg-grimoire-accent text-black transition-all';
+        } else {
+          tabs[k].className = 'py-1.5 text-[11px] font-bold rounded-lg text-gray-400 hover:text-white transition-all';
+        }
+      });
+
+      rollRandomGeneration();
+    }
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function rollRandomGeneration() {
+      triggerHaptic([25]);
+      const resBox = document.getElementById('genResultBox');
+
+      if (activeGenCategory === 'npc') {
+        const name = `${pickRandom(GEN_DATA.firstnames)} ${pickRandom(GEN_DATA.lastnames)}`;
+        const race = pickRandom(GEN_DATA.races);
+        const role = pickRandom(GEN_DATA.roles);
+        const trait = pickRandom(GEN_DATA.traits);
+        const secret = pickRandom(GEN_DATA.secrets);
+
+        currentGenMarkdown = `\n### 👤 PNJ : ${name}\n- **Ascendance & Rôle** : ${race}, ${role}\n- **Personnalité** : ${trait}\n- **Secret MJ** : ${secret}\n`;
+        resBox.innerHTML = `
+          <div class="font-bold text-sm text-grimoire-accent flex items-center gap-1">
+            <span>👤</span> <span>${escapeHtml(name)}</span>
+          </div>
+          <div><strong class="text-amber-200/80">Rôle :</strong> ${escapeHtml(race)} — ${escapeHtml(role)}</div>
+          <div><strong class="text-amber-200/80">Trait :</strong> ${escapeHtml(trait)}</div>
+          <div class="p-2 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] mt-1">
+            <strong>🗝️ Secret :</strong> ${escapeHtml(secret)}
+          </div>
+        `;
+      } else if (activeGenCategory === 'place') {
+        const place = pickRandom(GEN_DATA.places);
+        const amb = pickRandom(GEN_DATA.ambiances);
+
+        currentGenMarkdown = `\n### 🏰 Lieu : ${place}\n- **Ambiance & Décor** : ${amb}\n`;
+        resBox.innerHTML = `
+          <div class="font-bold text-sm text-grimoire-accent flex items-center gap-1">
+            <span>🏰</span> <span>${escapeHtml(place)}</span>
+          </div>
+          <div class="pt-1"><strong class="text-amber-200/80">Ambiance sensorielle :</strong><br/>${escapeHtml(amb)}</div>
+        `;
+      } else if (activeGenCategory === 'rumor') {
+        const rumor = pickRandom(GEN_DATA.rumors);
+
+        currentGenMarkdown = `\n> [!SECRET]\n> **👂 Rumeur de Taverne** : ${rumor}\n`;
+        resBox.innerHTML = `
+          <div class="font-bold text-sm text-grimoire-accent flex items-center gap-1">
+            <span>👂</span> <span>Rumeur de Taverne</span>
+          </div>
+          <div class="p-2.5 rounded-lg bg-black/40 border border-grimoire-border text-gray-200 italic mt-1">
+            « ${escapeHtml(rumor)} »
+          </div>
+        `;
+      } else if (activeGenCategory === 'loot') {
+        const loot = pickRandom(GEN_DATA.loots);
+
+        currentGenMarkdown = `\n### 💰 Butin Découvert\n- ${loot}\n`;
+        resBox.innerHTML = `
+          <div class="font-bold text-sm text-grimoire-accent flex items-center gap-1">
+            <span>💰</span> <span>Trésor / Relique</span>
+          </div>
+          <div class="pt-1"><strong class="text-amber-200/80">Description :</strong><br/>${escapeHtml(loot)}</div>
+        `;
+      }
+    }
+
+    function insertGenResultIntoNote() {
+      if (!currentGenMarkdown) return;
+      triggerHaptic([30, 20]);
+      insertMarkdown('', currentGenMarkdown);
+      closeGeneratorModal();
+      showToast('Génération insérée dans votre note !', '📥');
+    }
+
+    // --- DÉTECTION ET AUTO-DISCOVERY DE GRIMOIRE PC SUR LE RÉSEAU LOCAL ---
+    let isScanningNetwork = false;
+    let pcServerDetected = null;
+
+    async function checkServerAlive(url) {
+      if (!url) return false;
+      const cleanUrl = url.trim().replace(/\/+$/, '');
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 1200);
+        const res = await fetch(`${cleanUrl}/api/status`, {
+          method: 'GET',
+          mode: 'cors',
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && (data.app === 'grimoire' || data.status === 'ok')) {
+            return cleanUrl;
+          }
+        }
+      } catch(e) {}
+
+      // Fallback check sur /api/mj/vault_notes
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 1200);
+        const res = await fetch(`${cleanUrl}/api/mj/vault_notes`, {
+          method: 'GET',
+          mode: 'cors',
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+        if (res.ok) return cleanUrl;
+      } catch(e) {}
+
+      return false;
+    }
+
+    async function detectGrimoireServer(userInitiated = false) {
+      if (isScanningNetwork) return;
+      isScanningNetwork = true;
+      updateConnStatusUI('searching', 'Recherche de Grimoire PC sur le Wi-Fi…');
+
+      // 1. Vérifier si un paramètre d'URL existe (?server= ou ?pc=)
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramServer = urlParams.get('server') || urlParams.get('pc');
+      if (paramServer) {
+        const alive = await checkServerAlive(paramServer);
+        if (alive) {
+          applyDetectedServer(alive);
+          isScanningNetwork = false;
+          if (userInitiated) showToast('Grimoire PC connecté !', '🟢');
+          return;
+        }
+      }
+
+      // 2. Vérifier l'adresse sauvegardée en local
+      const saved = (inpServerUrl.value || localStorage.getItem(SERVER_KEY) || '').trim().replace(/\/+$/, '');
+      if (saved && !saved.includes('192.168.1.X')) {
+        const alive = await checkServerAlive(saved);
+        if (alive) {
+          applyDetectedServer(alive);
+          isScanningNetwork = false;
+          if (userInitiated) showToast('Grimoire PC connecté !', '🟢');
+          return;
+        }
+      }
+
+      // 3. Vérifier l'origine courante (si ce n'est pas GitHub Pages)
+      if (!window.location.hostname.includes('github.io')) {
+        const originUrl = `${window.location.protocol}//${window.location.hostname}:7438`;
+        const alive = await checkServerAlive(originUrl);
+        if (alive) {
+          applyDetectedServer(alive);
+          isScanningNetwork = false;
+          if (userInitiated) showToast('Grimoire PC connecté !', '🟢');
+          return;
+        }
+      }
+
+      // 4. Balayage rapide du réseau local
+      const candidateIps = ['http://127.0.0.1:7438', 'http://localhost:7438'];
+
+      let lastSubnet = '192.168.1';
+      if (saved) {
+        const match = saved.match(/(\d+\.\d+\.\d+)\.\d+/);
+        if (match) lastSubnet = match[1];
+      }
+
+      // Scanner les 60 premières IPs du sous-réseau en priorité
+      for (let i = 1; i <= 60; i++) {
+        candidateIps.push(`http://${lastSubnet}.${i}:7438`);
+      }
+
+      // Sous-réseaux alternatifs courants
+      if (lastSubnet !== '192.168.0') {
+        for (let i = 1; i <= 35; i++) {
+          candidateIps.push(`http://192.168.0.${i}:7438`);
+        }
+      }
+      if (lastSubnet !== '10.0.0') {
+        for (let i = 1; i <= 20; i++) {
+          candidateIps.push(`http://10.0.0.${i}:7438`);
+        }
+      }
+
+      let foundUrl = null;
+      const batchSize = 12;
+      for (let i = 0; i < candidateIps.length; i += batchSize) {
+        const batch = candidateIps.slice(i, i + batchSize);
+        updateConnStatusUI('searching', `Scan Wi-Fi (${Math.min(i + batchSize, candidateIps.length)}/${candidateIps.length})…`);
+        const results = await Promise.all(batch.map(url => checkServerAlive(url)));
+        foundUrl = results.find(Boolean);
+        if (foundUrl) break;
+      }
+
+      if (foundUrl) {
+        applyDetectedServer(foundUrl);
+        if (userInitiated) showToast('Grimoire PC détecté !', '🟢');
+      } else {
+        updateConnStatusUI('offline', 'PC non détecté (vérifiez Grimoire PC)');
+        if (userInitiated) {
+          alert("Grimoire PC n'a pas été détecté sur le réseau local.\n\nAssurez-vous que :\n1. Grimoire est bien ouvert sur votre PC.\n2. Le serveur mobile est actif (icône 📱 Mobile dans Grimoire).\n3. Votre smartphone est connecté au même réseau Wi-Fi que le PC.");
+        }
+      }
+      isScanningNetwork = false;
+    }
+
+    function applyDetectedServer(url) {
+      pcServerDetected = url;
+      inpServerUrl.value = url;
+      localStorage.setItem(SERVER_KEY, url);
+      updateConnStatusUI('online', `Grimoire PC connecté (${url.replace(/^http:\/\//, '')})`);
+      const badge = document.getElementById('txtAutoDetectedBadge');
+      if (badge) badge.classList.remove('hidden');
+    }
+
+    function updateConnStatusUI(state, msg) {
+      const dot = document.getElementById('pcConnDot');
+      const text = document.getElementById('pcConnText');
+      const hDot = document.getElementById('headerPcDot');
+      if (!dot || !text) return;
+
+      if (state === 'online') {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0';
+        text.className = 'text-emerald-300 font-semibold truncate text-[11px]';
+        text.textContent = msg;
+        if (hDot) {
+          hDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+          hDot.title = msg;
+        }
+      } else if (state === 'searching') {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping flex-shrink-0';
+        text.className = 'text-amber-300 text-[11px] truncate';
+        text.textContent = msg;
+      } else {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-gray-500 flex-shrink-0';
+        text.className = 'text-gray-400 text-[11px] truncate';
+        text.textContent = msg;
+        if (hDot) {
+          hDot.className = 'w-2 h-2 rounded-full bg-gray-500';
+          hDot.title = 'Grimoire PC hors ligne';
+        }
+      }
+    }
+
+    // --- SYNCHRONISATION DIRECTE VERS LE PC ---
+    function openSyncModal() {
+      triggerHaptic([20]);
+      saveCurrentNote();
+      syncFeedback.classList.add('hidden');
+      const cntEl = document.getElementById('txtCountAllNotes');
+      if (cntEl) cntEl.textContent = notes.length;
+      syncModal.classList.remove('hidden');
+
+      if (!pcServerDetected && (!inpServerUrl.value || inpServerUrl.value.includes('192.168.1.X'))) {
+        detectGrimoireServer(false);
+      } else if (inpServerUrl.value) {
+        checkServerAlive(inpServerUrl.value).then(alive => {
+          if (alive) applyDetectedServer(alive);
+          else updateConnStatusUI('offline', 'PC hors ligne (cliquez sur Détecter)');
+        });
+      }
+    }
+
+    function closeSyncModal() {
+      syncModal.classList.add('hidden');
+    }
+
+    async function sendAllNotesToGrimoirePC() {
+      triggerHaptic([30]);
+      saveCurrentNote();
+
+      const serverUrl = inpServerUrl.value.trim().replace(/\/+$/, '');
+      if (!serverUrl) {
+        alert('Veuillez renseigner l\'URL ou l\'adresse IP de votre PC Grimoire.');
+        return;
+      }
+      localStorage.setItem(SERVER_KEY, serverUrl);
+      const targetFolder = selTargetFolder.value;
+
+      // Filtrer les notes non vides pour ne jamais envoyer de note blanche
+      const validNotes = notes.filter(n => n.content && n.content.trim().length > 0);
+      if (validNotes.length === 0) {
+        alert("Toutes vos notes sont vides. Rien à synchroniser.");
+        return;
+      }
+
+      const btnAll = document.getElementById('btnSendAllToPc');
+      btnAll.disabled = true;
+      btnAll.innerHTML = '<span>⏳ Envoi groupé en cours…</span>';
+      syncFeedback.classList.remove('hidden', 'bg-red-900/40', 'border-red-500', 'bg-emerald-900/40', 'border-emerald-500');
+
+      let successCount = 0;
+      let conflictCount = 0;
+
+      for (const n of validNotes) {
+        const payload = {
+          title: n.title,
+          content: n.content,
+          folder: targetFolder,
+          pcPath: n.pcPath || null,
+          updatedAt: n.updatedAt || Date.now(),
+          author: 'MJ Mobile'
+        };
+        try {
+          const res = await fetch(`${serverUrl}/api/mj/notes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const resData = await res.json().catch(() => ({}));
+          if (res.ok && resData.success !== false) {
+            successCount++;
+            if (resData.path) n.pcPath = resData.path;
+            if (resData.conflict) conflictCount++;
+          }
+        } catch(e) {}
+      }
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+
+      btnAll.disabled = false;
+      btnAll.innerHTML = `<span>📦 Tout synchroniser (${notes.length} notes vers PC)</span>`;
+
+      if (successCount > 0) {
+        triggerHaptic([20, 50, 20]);
+        syncFeedback.className = 'text-xs rounded-xl p-3 bg-emerald-900/40 border border-emerald-500/80 text-emerald-200';
+        let msg = `✅ <strong>${successCount} note${successCount > 1 ? 's synchronisées' : ' synchronisée'} en toute sécurité !</strong>`;
+        if (conflictCount > 0) {
+          msg += `<br/><span class="text-amber-300">⚠️ ${conflictCount} note(s) sauvegardée(s) en copie de conflit car la version PC était plus récente.</span>`;
+        }
+        msg += `<br/>Retrouvez vos écrits dans votre Vault Grimoire sous <code>${escapeHtml(targetFolder)}/</code>.`;
+        syncFeedback.innerHTML = msg;
+        showToast(`${successCount} notes envoyées au PC !`, '🚀');
+        setTimeout(closeSyncModal, 2800);
+      } else {
+        syncFeedback.className = 'text-xs rounded-xl p-3 bg-red-900/40 border border-red-500/80 text-red-200';
+        syncFeedback.innerHTML = `❌ <strong>Échec de connexion au PC :</strong><br/>Vérifiez que Grimoire PC est lancé avec le serveur mobile démarré, et que votre smartphone est connecté au Wi-Fi.`;
+      }
+    }
+
+    async function sendNoteToGrimoirePC() {
+      triggerHaptic([30]);
+      saveCurrentNote();
+
+      const serverUrl = inpServerUrl.value.trim().replace(/\/+$/, '');
+      if (!serverUrl) {
+        alert('Veuillez renseigner l\'URL ou l\'adresse IP de votre PC Grimoire.');
+        return;
+      }
+
+      localStorage.setItem(SERVER_KEY, serverUrl);
+      const targetFolder = selTargetFolder.value;
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note) return;
+
+      // Sécurité anti-effacement sur mobile
+      if (!note.content || !note.content.trim()) {
+        alert("⚠️ Sécurité : Impossible d'envoyer une note vide vers le PC afin d'éviter tout écrasement accidentel.");
+        return;
+      }
+
+      btnSendToPc.disabled = true;
+      btnSendToPc.innerHTML = '<span>⏳ Envoi…</span>';
+      syncFeedback.classList.remove('hidden', 'bg-red-900/40', 'border-red-500', 'bg-emerald-900/40', 'border-emerald-500');
+
+      const payload = {
+        title: note.title,
+        content: note.content,
+        folder: targetFolder,
+        pcPath: note.pcPath || null,
+        updatedAt: note.updatedAt || Date.now(),
+        author: 'MJ Mobile'
+      };
+
+      try {
+        const res = await fetch(`${serverUrl}/api/mj/notes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const resData = await res.json().catch(() => ({}));
+
+        if (res.ok && resData.success !== false) {
+          triggerHaptic([20, 50]);
+          if (resData.path) {
+            note.pcPath = resData.path;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+          }
+
+          syncFeedback.className = 'text-xs rounded-xl p-3 bg-emerald-900/40 border border-emerald-500/80 text-emerald-200';
+          if (resData.conflict) {
+            syncFeedback.innerHTML = `⚠️ <strong>Note enregistrée comme copie de conflit !</strong><br/>La version sur le PC était plus récente. Votre note a été sauvegardée sans rien écraser sous :<br/><code>${escapeHtml(resData.path)}</code>.`;
+            showToast('Enregistré en copie de conflit sur PC', '⚠️');
+          } else {
+            syncFeedback.innerHTML = `✅ <strong>Transfert sécurisé réussi !</strong><br/>Enregistré sur votre PC sous <code>${escapeHtml(resData.path || targetFolder)}</code>.<br/><span class="text-[10px] text-emerald-400">🛡️ Sauvegarde préventive automatique active sur PC.</span>`;
+            showToast('Note transférée vers Grimoire PC !', '🚀');
+          }
+          setTimeout(closeSyncModal, 2800);
+        } else {
+          throw new Error(resData.error || `Erreur serveur (${res.status})`);
+        }
+      } catch (err) {
+        if (err.message && err.message.includes('Sécurité')) {
+          syncFeedback.className = 'text-xs rounded-xl p-3 bg-red-900/40 border border-red-500/80 text-red-200';
+          syncFeedback.innerHTML = `❌ <strong>${escapeHtml(err.message)}</strong>`;
+        } else {
+          tryFallbackWebSocket(serverUrl, payload);
+        }
+      } finally {
+        btnSendToPc.disabled = false;
+        btnSendToPc.innerHTML = '<span>🚀 Transférer</span>';
+      }
+    }
+
+    function tryFallbackWebSocket(serverUrl, payload) {
+      try {
+        const wsUrl = serverUrl.replace(/^http/, 'ws') + '/ws';
+        const ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+          ws.send(JSON.stringify({ event: 'join', data: { name: 'MJ Mobile' } }));
+          setTimeout(() => {
+            ws.send(JSON.stringify({ event: 'mj_note_push', data: payload }));
+            triggerHaptic([20, 50]);
+            syncFeedback.className = 'text-xs rounded-xl p-3 bg-emerald-900/40 border border-emerald-500/80 text-emerald-200';
+            syncFeedback.innerHTML = `✅ <strong>Transféré via WebSocket !</strong><br/>Votre PC Grimoire a reçu la note.`;
+            showToast('Note reçue par le PC !', '⚡');
+            setTimeout(() => { ws.close(); closeSyncModal(); }, 2000);
+          }, 300);
+        };
+
+        ws.onerror = () => {
+          syncFeedback.className = 'text-xs rounded-xl p-3 bg-red-900/40 border border-red-500/80 text-red-200';
+          syncFeedback.innerHTML = `❌ <strong>Connexion impossible au PC :</strong><br/>Vérifiez que Grimoire est lancé sur votre PC, que le serveur mobile est actif, et que vous êtes bien sur le même réseau Wi-Fi.<br/><br/><em>Astuce : Vous pouvez aussi cliquer sur « Fichier .md » pour l'exporter directement !</em>`;
+        };
+      } catch(e) {
+        syncFeedback.className = 'text-xs rounded-xl p-3 bg-red-900/40 border border-red-500/80 text-red-200';
+        syncFeedback.innerHTML = `❌ Impossible d'atteindre le serveur. Utilisez le bouton « Fichier .md » pour sauvegarder.`;
+      }
+    }
+
+    // --- EXPORTS LOCAUX & PARTAGE ---
+    function downloadMarkdown() {
+      triggerHaptic([20]);
+      saveCurrentNote();
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note) return;
+
+      const blob = new Blob([note.content], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${slugify(note.title) || 'note-mj'}.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Fichier .md téléchargé !', '💾');
+    }
+
+    async function shareNote() {
+      triggerHaptic([20]);
+      saveCurrentNote();
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note) return;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: note.title,
+            text: note.content
+          });
+        } catch(e) {}
+      } else {
+        copyToClipboard();
+      }
+    }
+
+    function copyToClipboard() {
+      triggerHaptic([20]);
+      saveCurrentNote();
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note) return;
+      navigator.clipboard.writeText(note.content).then(() => {
+        showToast('Texte Markdown copié !', '📋');
+      }).catch(() => {
+        showToast('Erreur copie', '⚠️');
+      });
+    }
+
+    // --- UTILITAIRES ---
+    function slugify(text) {
+      return text.toString().toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9_-]/g, '_')
+        .replace(/_+/g, '_');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function showToast(msg, icon = '✨') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastIcon').textContent = icon;
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.remove('opacity-0');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.add('opacity-0');
+      }, 2500);
+    }
+
+    // Lancement au chargement
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
