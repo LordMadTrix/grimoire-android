@@ -61,8 +61,10 @@ fun VttScreen(
 
     var showAddTokenDialog by remember { mutableStateOf(false) }
     var showSpellDialog by remember { mutableStateOf(false) }
-    var selectedPinForDetail by remember { mutableStateOf<MapPin?>(null) }
-    var editingToken by remember { mutableStateOf<VttToken?>(null) }
+    var selectedPinIdForDetail by remember { mutableStateOf<String?>(null) }
+    val selectedPinForDetail = uiState.pins.find { it.id == selectedPinIdForDetail }
+    var editingTokenId by remember { mutableStateOf<String?>(null) }
+    val editingToken = uiState.tokens.find { it.id == editingTokenId }
 
     // Map Library & Hover Preview state
     var showLibraryPanel by remember { mutableStateOf(true) }
@@ -299,9 +301,9 @@ fun VttScreen(
 
                             if (clickedToken != null) {
                                 viewModel.selectToken(clickedToken.id)
-                                editingToken = clickedToken
+                                editingTokenId = clickedToken.id
                             } else if (clickedPin != null) {
-                                selectedPinForDetail = clickedPin
+                                selectedPinIdForDetail = clickedPin.id
                             } else if (uiState.selectedTokenId != null) {
                                 viewModel.moveToken(uiState.selectedTokenId!!, gridX.toFloat(), gridY.toFloat())
                                 viewModel.revealCell(gridX, gridY)
@@ -560,30 +562,28 @@ fun VttScreen(
 
     if (editingToken != null) {
         TokenEditDialog(
-            token = editingToken!!,
+            token = editingToken,
             onHpDelta = { delta ->
-                viewModel.modifyCombatantHp(editingToken!!.id, delta)
-                editingToken = uiState.tokens.find { it.id == editingToken!!.id }
+                viewModel.modifyCombatantHp(editingToken.id, delta)
             },
             onToggleCondition = { cond ->
-                viewModel.toggleCombatantCondition(editingToken!!.id, cond)
+                viewModel.toggleCombatantCondition(editingToken.id, cond)
             },
             onRemove = {
-                viewModel.removeToken(editingToken!!.id)
-                editingToken = null
+                viewModel.removeToken(editingToken.id)
+                editingTokenId = null
             },
-            onDismiss = { editingToken = null }
+            onDismiss = { editingTokenId = null }
         )
     }
 
     if (selectedPinForDetail != null) {
         PinDetailDialog(
-            pin = selectedPinForDetail!!,
+            pin = selectedPinForDetail,
             onToggleReveal = {
-                viewModel.togglePinSecret(selectedPinForDetail!!.id)
-                selectedPinForDetail = uiState.pins.find { it.id == selectedPinForDetail!!.id }
+                viewModel.togglePinSecret(selectedPinForDetail.id)
             },
-            onDismiss = { selectedPinForDetail = null }
+            onDismiss = { selectedPinIdForDetail = null }
         )
     }
 }

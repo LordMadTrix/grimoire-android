@@ -31,7 +31,8 @@ fun PlayerHubScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var selectedSection by remember { mutableStateOf("Fiches") } // "Fiches" or "Indices"
-    var expandedHandout by remember { mutableStateOf<SecretHandout?>(null) }
+    var expandedHandoutId by remember { mutableStateOf<String?>(null) }
+    val expandedHandout = uiState.handouts.find { it.id == expandedHandoutId }
 
     Column(
         modifier = modifier
@@ -92,7 +93,7 @@ fun PlayerHubScreen(
                     HandoutCard(
                         handout = handout,
                         onToggleShare = { viewModel.toggleHandoutShare(handout.id) },
-                        onExpand = { expandedHandout = handout }
+                        onExpand = { expandedHandoutId = handout.id }
                     )
                 }
             }
@@ -100,9 +101,9 @@ fun PlayerHubScreen(
     }
 
     if (expandedHandout != null) {
-        val h = expandedHandout!!
+        val h = expandedHandout
         AlertDialog(
-            onDismissRequest = { expandedHandout = null },
+            onDismissRequest = { expandedHandoutId = null },
             containerColor = GrimoireCard,
             title = { Text(h.title, color = GrimoireGold, style = MaterialTheme.typography.titleMedium) },
             text = {
@@ -124,7 +125,7 @@ fun PlayerHubScreen(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { expandedHandout = null }) { Text("Fermer", color = GrimoireGold) }
+                TextButton(onClick = { expandedHandoutId = null }) { Text("Fermer", color = GrimoireGold) }
             }
         )
     }

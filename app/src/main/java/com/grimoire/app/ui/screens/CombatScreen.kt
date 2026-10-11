@@ -34,7 +34,8 @@ fun CombatScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
-    var selectedCombatantForConditions by remember { mutableStateOf<Combatant?>(null) }
+    var selectedCombatantIdForConditions by remember { mutableStateOf<String?>(null) }
+    val selectedCombatantForConditions = uiState.combatants.find { it.id == selectedCombatantIdForConditions }
 
     val currentTurnCombatant = uiState.combatants.getOrNull(uiState.currentTurnIndex)
 
@@ -234,7 +235,7 @@ fun CombatScreen(
                                 }
 
                                 IconButton(
-                                    onClick = { selectedCombatantForConditions = combatant },
+                                    onClick = { selectedCombatantIdForConditions = combatant.id },
                                     modifier = Modifier.size(32.dp)
                                 ) {
                                     Icon(Icons.Default.MoreVert, contentDescription = "Options", tint = TextMuted)
@@ -361,9 +362,9 @@ fun CombatScreen(
 
     // Conditions and options sheet for a combatant
     if (selectedCombatantForConditions != null) {
-        val c = selectedCombatantForConditions!!
+        val c = selectedCombatantForConditions
         AlertDialog(
-            onDismissRequest = { selectedCombatantForConditions = null },
+            onDismissRequest = { selectedCombatantIdForConditions = null },
             containerColor = GrimoireCard,
             title = { Text("États de ${c.name}", color = GrimoireGold) },
             text = {
@@ -379,7 +380,6 @@ fun CombatScreen(
                                 selected = isApplied,
                                 onClick = {
                                     viewModel.toggleCombatantCondition(c.id, cond)
-                                    selectedCombatantForConditions = uiState.combatants.find { it.id == c.id }
                                 },
                                 label = { Text(cond, fontSize = 11.sp) }
                             )
@@ -388,13 +388,13 @@ fun CombatScreen(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { selectedCombatantForConditions = null }) { Text("OK", color = GrimoireGold) }
+                TextButton(onClick = { selectedCombatantIdForConditions = null }) { Text("OK", color = GrimoireGold) }
             },
             dismissButton = {
                 TextButton(
                     onClick = {
                         viewModel.removeCombatant(c.id)
-                        selectedCombatantForConditions = null
+                        selectedCombatantIdForConditions = null
                     }
                 ) {
                     Text("Retirer du combat", color = GrimoireRed)

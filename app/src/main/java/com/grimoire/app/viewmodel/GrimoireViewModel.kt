@@ -169,9 +169,13 @@ class GrimoireViewModel : ViewModel() {
 
     fun removeToken(id: String) {
         _uiState.update { state ->
+            val updatedTokens = state.tokens.filterNot { it.id == id }
+            val updatedCombatants = state.combatants.filterNot { it.id == id }
+            val newTurnIndex = if (updatedCombatants.isEmpty()) 0 else state.currentTurnIndex.coerceIn(0, updatedCombatants.size - 1)
             state.copy(
-                tokens = state.tokens.filterNot { it.id == id },
-                combatants = state.combatants.filterNot { it.id == id },
+                tokens = updatedTokens,
+                combatants = updatedCombatants,
+                currentTurnIndex = newTurnIndex,
                 selectedTokenId = if (state.selectedTokenId == id) null else state.selectedTokenId
             )
         }
@@ -349,7 +353,14 @@ class GrimoireViewModel : ViewModel() {
     }
 
     fun removeCombatant(id: String) {
-        _uiState.update { it.copy(combatants = it.combatants.filterNot { it.id == id }) }
+        _uiState.update { state ->
+            val updated = state.combatants.filterNot { it.id == id }
+            val newTurnIndex = if (updated.isEmpty()) 0 else state.currentTurnIndex.coerceIn(0, updated.size - 1)
+            state.copy(
+                combatants = updated,
+                currentTurnIndex = newTurnIndex
+            )
+        }
     }
 
     // --- Grimoire Notes Actions ---
