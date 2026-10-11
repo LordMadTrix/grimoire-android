@@ -1,130 +1,81 @@
-name: Build and Release
+name: Build Android APK & Release
+
 on:
   push:
+    branches:
+      - main
+      - master
     tags:
       - 'v*'
+  pull_request:
   workflow_dispatch:
 
 jobs:
-  release:
-    permissions:
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: windows-latest
-            target: x86_64-pc-windows-msvc
-          - platform: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
-          - platform: macos-14
-            target: aarch64-apple-darwin
-
-    runs-on: ${{ matrix.platform }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-
-      - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.target }}
-
-      - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-
-      - name: install frontend dependencies
-        run: npm install && npm install --prefix map-editor
-
-      - name: build tauri app
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: v__VERSION__
-          releaseName: "Grimoire v__VERSION__"
-          releaseBody: |
-            ### 🐉 Grimoire v__VERSION__
-
-            Build de développement autonome et ultra-léger.
-
-            #### 📥 Téléchargement & Installation
-            - **Windows** : Téléchargez l'installateur `.msi` ou le setup `.exe` ci-dessous.
-            - **Linux** : Téléchargez le paquet `.AppImage` ou `.deb`.
-
-            ---
-
-            #### 🛡️ Remarque importante concernant Windows SmartScreen et Chrome :
-            *Grimoire est un projet open-source indépendant en cours de développement.*
-            Comme les nouvelles versions n'ont pas encore accumulé d'historique auprès des serveurs de Microsoft/Google, votre navigateur ou Windows peut afficher un message de précaution au premier lancement :
-            
-            - **Sur Google Chrome** : Si le téléchargement est mis en attente, cliquez sur la flèche ou les trois petits points à côté du fichier > sélectionnez **« Conserver »** (ou « Télécharger le fichier suspect »).
-            - **Sous Windows (SmartScreen)** : Lorsque la fenêtre bleue *« Windows a protégé votre ordinateur »* s'affiche, cliquez sur le lien **« Informations complémentaires »**, puis sur le bouton **« Exécuter quand même »**.
-
-            Le code source est 100% ouvert, auditable et disponible sur ce dépôt GitHub.
-
-            ---
-            *Voir le détail des changements récents dans l'historique des commits.*
-          releaseDraft: false
-          prerelease: false
-
-  normalize-assets:
-    needs: release
-    if: ${{ !cancelled() }}
+  build:
+    name: Build Android APK
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: normalize release asset names
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bash scripts/normalize-release-assets.sh
-
-  winget-manifests:
-    needs: normalize-assets
-    if: ${{ !cancelled() && needs.normalize-assets.result != 'failed' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
         with:
-          fetch-depth: 0
-          ref: main
+          java-version: '21'
+          distribution: 'temurin'
 
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-      - name: generate winget manifests with real sha256
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Generate Debug Keystore if missing
         run: |
-          npm install --no-save
-          bash scripts/generate-winget-manifest.sh
-          bash scripts/normalize-release-assets.sh   # vérification idempotence
-
-      - name: commit manifests
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          VERSION=$(node -p "require('./package.json').version")
-          git add dist-manifests/winget
-          if git diff --cached --quiet; then
-            echo "Aucun changement de manifest — rien à committer."
-          else
-            git commit -m "chore(manifest): manifests winget v$VERSION (CI)"
-            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main || echo "Push skipped or branch protected."
+          if [ ! -f "debug.keystore" ]; then
+            keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
           fi
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Prepare APK Output
+        run: |
+          mkdir -p release-output
+          cp app/build/outputs/apk/debug/app-debug.apk release-output/grimoire-debug.apk
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+            cp app/build/outputs/apk/debug/app-debug.apk release-output/grimoire-${VERSION}.apk
+          fi
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: grimoire-android-apk
+          path: release-output/*.apk
+          retention-days: 30
+
+      - name: Publish to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || 'latest' }}
+          files: release-output/*.apk
+          draft: false
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+          generate_release_notes: true
+          name: ${{ startsWith(github.ref, 'refs/tags/v') && format('Grimoire {0} (Android)', github.ref_name) || 'Grimoire Android (Dernière version)' }}
+          body: |
+            ### 🐉 Grimoire Android
+
+            Application mobile & tablette pour Maîtres du Jeu TTRPG (Table Virtuelle VTT, Initiative & Combat, Grimoire Markdown, Compendium Herboriste, Lanceur de Dés & Ambiances).
+
+            #### 📱 Téléchargement & Installation :
+            1. Téléchargez le fichier `.apk` ci-dessous sur votre smartphone ou tablette Android.
+            2. Ouvrez le fichier téléchargé pour installer l'application (autorisez l'installation depuis cette source si demandé par Android).
+            3. Lancez Grimoire et profitez de votre table virtuelle !
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
