@@ -63,3 +63,18 @@ refactor.cjs
 refactor.py
 scratch_ollama.js
 mapper-rpg-extracted/
+
+# Android & Gradle
+.gradle/
+build/
+app/build/
+*.apk
+*.aab
+*.keystore
+local.properties
+.cxx/
+release-output/
+
+# Fichiers audio temporaires / tests
+*.mp3
+*.wav
