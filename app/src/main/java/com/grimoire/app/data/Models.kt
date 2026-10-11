@@ -12,7 +12,10 @@ data class MapScene(
     val assetPath: String,
     val gridWidth: Int = 25,
     val gridHeight: Int = 20,
-    val cellSizeDp: Float = 48f
+    val cellSizeDp: Float = 48f,
+    val description: String = "",
+    val environment: String = "Donjon",
+    val recommendedLevel: String = "Niveau 1-5"
 )
 
 data class VttToken(

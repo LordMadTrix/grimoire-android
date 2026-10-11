@@ -9,7 +9,10 @@ object SampleCampaignData {
             assetPath = "maps/sanctuaire.png",
             gridWidth = 24,
             gridHeight = 18,
-            cellSizeDp = 44f
+            cellSizeDp = 44f,
+            description = "Temple elfique oublié au cœur d'une forêt embrumée, orné de colonnes brisées et d'un autel sacré aux énergies mystiques.",
+            environment = "Temple / Ruines",
+            recommendedLevel = "Niveau 1-4"
         ),
         MapScene(
             id = "abandoned_fortress",
@@ -17,7 +20,21 @@ object SampleCampaignData {
             assetPath = "maps/abandoned_fortress.png",
             gridWidth = 26,
             gridHeight = 20,
-            cellSizeDp = 44f
+            cellSizeDp = 44f,
+            description = "Bastion fortifié en pierre de taille jadis imprenable, aujourd'hui occupé par les pillards orques de Krag.",
+            environment = "Forteresse / Bastion",
+            recommendedLevel = "Niveau 3-6"
+        ),
+        MapScene(
+            id = "pumpkin_queen",
+            name = "Reine des Citrouilles",
+            assetPath = "maps/pumpkin_queen.jpg",
+            gridWidth = 24,
+            gridHeight = 18,
+            cellSizeDp = 44f,
+            description = "Clairière lugubre bordée de citrouilles géantes enchantées, d'arbres tordus et de brumes spectrales violacées.",
+            environment = "Marais Hanté / Halloween",
+            recommendedLevel = "Niveau 4-7"
         ),
         MapScene(
             id = "crypt",
@@ -25,7 +42,10 @@ object SampleCampaignData {
             assetPath = "",
             gridWidth = 20,
             gridHeight = 16,
-            cellSizeDp = 48f
+            cellSizeDp = 48f,
+            description = "Catacombes souterraines séculaires truffées de sarcophages descellés, dalles piégées et émanations spectrales.",
+            environment = "Souterrain / Nécropole",
+            recommendedLevel = "Niveau 2-5"
         ),
         MapScene(
             id = "forest_ambush",
@@ -33,7 +53,10 @@ object SampleCampaignData {
             assetPath = "",
             gridWidth = 22,
             gridHeight = 18,
-            cellSizeDp = 46f
+            cellSizeDp = 46f,
+            description = "Croisée des sentiers forestiers centrée autour d'un ancien dolmen de pierre brute gravé de runes druidiques.",
+            environment = "Forêt Sauvage",
+            recommendedLevel = "Niveau 1-3"
         )
     )
 
